@@ -5,16 +5,11 @@ const fs = require("fs");
 const logger = require("./helpers/logger");
 const beautify = require("json-beautify");
 const reload = require("require-reload")(require);
-const { writeFile, readFile, exists } = require("fs");
+const { writeFileSync, readFileSync, existsSync } = require("fs");
 const { sep } = require("path");
-const { promisify } = require("util");
 
-const writeFileAsync = promisify(writeFile);
-const readFileAsync = promisify(readFile);
-const existsAsync = promisify(exists);
-
-if (!await existsAsync(__dirname+sep+"credentials.json")) writeFileSync(__dirname+sep+"credentials.json", [], "utf-8");
-if (!await existsAsync(__dirname+sep+"cache.json")) writeFileSync(__dirname+sep+"cache.json", [], "utf-8");
+if (!existsSync(__dirname+sep+"credentials.json")) writeFileSync(__dirname+sep+"credentials.json", [], "utf-8");
+if (!existsSync(__dirname+sep+"cache.json")) writeFileSync(__dirname+sep+"cache.json", [], "utf-8");
 
 let loginStates = [];
 

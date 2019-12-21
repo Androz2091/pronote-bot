@@ -27,7 +27,6 @@ module.exports = () => {
 
         // When a message is received, emit another event with the formatted message
         ig.fbns.on("direct_v2_message", (data) => {
-            console.log(data)
             ig.fbns.emit("message", new InstaMessage(data, ig));
         });
 
