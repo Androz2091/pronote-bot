@@ -7,6 +7,7 @@ const beautify = require("json-beautify");
 const reload = require("require-reload")(require);
 const { writeFile, readFile, exists } = require("fs");
 const { sep } = require("path");
+const { promisify } = require("util");
 
 const writeFileAsync = promisify(writeFile);
 const readFileAsync = promisify(readFile);
