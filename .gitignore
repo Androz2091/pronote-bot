@@ -1,0 +1,8 @@
+config.json
+cache.json
+credentials.json
+node_modules/
+data/
+.DS_Store
+state.json
+package-lock.json
