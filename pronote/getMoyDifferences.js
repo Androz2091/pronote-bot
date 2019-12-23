@@ -70,29 +70,31 @@ const getMoyennesDifferentes = (reponse1, reponse2) => {
     // Suppression des autres moyennes ANGLAIS
     matieresDernieresNotes = matieresDernieresNotes.filter((m) => !m.nom.startsWith("ANGLAIS"));
 
-    /* GENERATION MOYENNE GLOBALE ESPAGNOL */
-    /* Dans le suivi pluriannuel, seule la moyenne des
-     * moyennes de langue (compréhension écrite, expression orale, etc..) est affichée.
-     * Il faut donc calculer la moyenne des moyennes pour la comparer
-    */
-    let moyenneEspagnol = 0;
-    let nbNotesEspagnol = 0;
-    // Pour chaque moyenne d'anglais
-    matieresDernieresNotes.filter((m) => m.nom.startsWith("ESPAGNOL")).forEach((m) => {
-        // Ajout à la moyenne
-        moyenneEspagnol += parseFloat(m.moyenne.replace(",", "."));
-        // Incrémentation nb de notes totales
-        nbNotesEspagnol++;
-    });
-    moyenneEspagnol = arrondiALaPronote(moyenneEspagnol/nbNotesEspagnol, 2);
-    matieresDernieresNotes.push({
-        // Le nom sur le suivi pluriannuel est LV2
-        nom: "LV2",
-        // Moyenne de l'élève
-        moyenne: String(moyenneEspagnol).replace(".", ",")
-    });
-    // Suppression des autres moyennes ESPAGNOL
-    matieresDernieresNotes = matieresDernieresNotes.filter((m) => !m.nom.startsWith("ESPAGNOL"));
+    if(matieresDernieresNotes.some((n) => n.nom.startsWith("ESPAGNOL"))){
+        /* GENERATION MOYENNE GLOBALE ESPAGNOL */
+        /* Dans le suivi pluriannuel, seule la moyenne des
+         * moyennes de langue (compréhension écrite, expression orale, etc..) est affichée.
+         * Il faut donc calculer la moyenne des moyennes pour la comparer
+         */
+        let moyenneEspagnol = 0;
+        let nbNotesEspagnol = 0;
+        // Pour chaque moyenne d'anglais
+        matieresDernieresNotes.filter((m) => m.nom.startsWith("ESPAGNOL")).forEach((m) => {
+            // Ajout à la moyenne
+            moyenneEspagnol += parseFloat(m.moyenne.replace(",", "."));
+            // Incrémentation nb de notes totales
+            nbNotesEspagnol++;
+        });
+        moyenneEspagnol = arrondiALaPronote(moyenneEspagnol/nbNotesEspagnol, 2);
+        matieresDernieresNotes.push({
+            // Le nom sur le suivi pluriannuel est LV2
+            nom: "LV2",
+            // Moyenne de l'élève
+            moyenne: String(moyenneEspagnol).replace(".", ",")
+        });
+        // Suppression des autres moyennes ESPAGNOL
+        matieresDernieresNotes = matieresDernieresNotes.filter((m) => !m.nom.startsWith("ESPAGNOL"));
+    }
     
     /* RENOMMAGE SVT */
     // Svt est appelé SCIENCES VIE & TERRE sur dernières notes
