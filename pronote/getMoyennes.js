@@ -14,7 +14,7 @@ const IsJsonString = (str) => {
 module.exports = async ({ username, password }) => {
     return new Promise(async(resolve, reject) => {
 
-        let browser = await puppeteer.launch();
+        let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
         let page = await browser.newPage();
         logger.log("Browser opened. (session="+username+")");
 
