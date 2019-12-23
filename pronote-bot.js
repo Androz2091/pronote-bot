@@ -41,21 +41,21 @@ const helpPage =
             if(loginStates[i].step === "username"){
                 loginStates[i].username = message.content.toLowerCase();
                 loginStates[i].step     = "password";
-                return message.answer("Entrez votre mot de passe ENT :");
+                return message.reply("Entrez votre mot de passe ENT :");
             }
             
             // If the user entered his password
             if(loginStates[i].step === "password"){
                 loginStates[i].password = message.content;
-                message.answer("Vérification de vos identifiants...");
+                message.reply("Vérification de vos identifiants...");
                 // Check if the credentials are correct
                 genConnectedPage(loginStates[i].username, loginStates[i].password, true).then(async (page) => {
                     let avatar = await page.evaluate(() => {
                         return $("body").find("img")[1].src;
                     });
                     // If the credentials are correct
-                    await message.answer("Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion.");
-                    await message.answer(helpPage.replace("{{notifStatus}}", "🔔Notification activées"));
+                    await message.reply("Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion.");
+                    await message.reply(helpPage.replace("{{notifStatus}}", "🔔Notification activées"));
                     credentials.push({
                         username: loginStates[i].username,
                         password: loginStates[i].password,
@@ -70,21 +70,21 @@ const helpPage =
                 }).catch(async () => {
                     // Remove state
                     loginStates = loginStates.filter((l) => l.insta !== message.author.username);
-                    await message.answer("Hmm... on dirait que vos identifiants sont invalides.");
-                    return message.answer("Tapez !login pour réessayer!");
+                    await message.reply("Hmm... on dirait que vos identifiants sont invalides.");
+                    return message.reply("Tapez !login pour réessayer!");
                 });
             }
         }
 
         /* LOGIN MESSAGE */
         else if(!message.author.logged && message.content !== "!login"){
-            message.answer("Tapez !login pour vous connecter à l'ENT.");
+            message.reply("Tapez !login pour vous connecter à l'ENT.");
         }
 
         /* LOGIN COMMAND */
         else if(message.content === "!login"){
-            if(message.author.logged) return message.answer("Vous êtes déjà connecté !");
-            message.answer("Bonjour, @"+message.author.username+" !\nEntrez votre identifiant ENT (par exemple jean.dupont):");
+            if(message.author.logged) return message.reply("Vous êtes déjà connecté !");
+            message.reply("Bonjour, @"+message.author.username+" !\nEntrez votre identifiant ENT (par exemple jean.dupont):");
             loginStates.push({
                 insta: message.author.username,
                 step: "username",
@@ -98,55 +98,55 @@ const helpPage =
             credentials = credentials.filter((i) => i.insta !== message.author.username);
             fs.writeFileSync("./credentials.json", beautify(credentials, null, 2, 100), "utf-8");
             reload("./credentials.json");
-            message.answer("Déconnexion effectuée. Pour vous reconnecter, tapez !login.");
+            message.reply("Déconnexion effectuée. Pour vous reconnecter, tapez !login.");
         }
 
         /* MOYENNES */
         else if(message.content === "!moy"){
-            message.answer("Veuillez patienter...");
+            message.reply("Veuillez patienter...");
             getMoyennes(message.author.credentials).then((moyennes) => {
-                message.answer("Moyennes:\n\nNormale: "+moyennes.moyNormale+"\nPluriannuelle: "+moyennes.moyPluri);
+                message.reply("Moyennes:\n\nNormale: "+moyennes.moyNormale+"\nPluriannuelle: "+moyennes.moyPluri);
             }).catch((e) => {
-                message.answer("Une erreur est survenue (e="+e+")");
+                message.reply("Une erreur est survenue (e="+e+")");
             });
         }
 
         /* PICTURE COMMAND */
         else if(message.content === "!picture"){
-            await message.answer("Veuillez patienter...");
-            await message.answerImage(message.author.credentials.avatar);
-            message.answer("Voilà votre photo de profil Pronote!");
+            await message.reply("Veuillez patienter...");
+            await message.replyImage(message.author.credentials.avatar);
+            message.reply("Voilà votre photo de profil Pronote!");
         }
 
         /* NOTIF COMMAND */
         else if(message.content === "!notif"){
             if(message.author.credentials.notif){
-                return message.answer("Les notifications sont déjà activées ! Tapez !dénotif pour les désactiver.");
+                return message.reply("Les notifications sont déjà activées ! Tapez !dénotif pour les désactiver.");
             }
             credentials = credentials.filter((i) => i.insta !== message.author.username);
             message.author.credentials.notif = true;
             credentials.push(message.author.credentials);
             fs.writeFileSync("./credentials.json", beautify(credentials, null, 2, 100), "utf-8");
             reload("./credentials.json");
-            message.answer("Vous recevrez une notification lorsqu'une note est ajoutée sur Pronote ! Tapez !dénotif pour désactiver cette option.");
+            message.reply("Vous recevrez une notification lorsqu'une note est ajoutée sur Pronote ! Tapez !dénotif pour désactiver cette option.");
         }
 
         /* DÉNOTIF COMMAND */
         else if(message.content === "!dénotif"){
             if(!message.author.credentials.notif){
-                return message.answer("Les notifications sont déjà désactivées ! Tapez !notif pour les activer.");
+                return message.reply("Les notifications sont déjà désactivées ! Tapez !notif pour les activer.");
             }
             credentials = credentials.filter((i) => i.insta !== message.author.username);
             message.author.credentials.notif = false;
             credentials.push(message.author.credentials);
             fs.writeFileSync("./credentials.json", beautify(credentials, null, 2, 100), "utf-8");
             reload("./credentials.json");
-            message.answer("Vous ne recevrez plus de notification lorsqu'une note est ajoutée sur Pronote... Tapez !notif pour réactiver cette option.");
+            message.reply("Vous ne recevrez plus de notification lorsqu'une note est ajoutée sur Pronote... Tapez !notif pour réactiver cette option.");
         }
 
         /* HELP COMMAND */
         else if(message.content === "!help"){
-            await message.answer(helpPage.replace("{{notifStatus}}", (
+            await message.reply(helpPage.replace("{{notifStatus}}", (
                 message.author.credentials.notif ?
                 "🔔 Notifications activées" :
                 "🔕 Notifications désactivées")));
