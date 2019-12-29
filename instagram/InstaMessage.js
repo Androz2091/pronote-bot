@@ -7,11 +7,11 @@ module.exports = class InstaMessage {
         this.content = data.message.split(":").slice(1, data.message.split(":").length).join(":").trim();
     }
 
-    async answer(content){
+    async reply(content){
         this.author.send(content);
     }
 
-    async answerImage(fileURL){
+    async replyImage(fileURL){
         this.author.sendImage(fileURL);
     }
 
