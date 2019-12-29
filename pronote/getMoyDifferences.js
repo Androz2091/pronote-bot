@@ -105,24 +105,28 @@ const getMoyennesDifferentes = (reponse1, reponse2) => {
     matieresDernieresNotes.forEach((m) => {
         // Récupération de la moyenne du suivi pluriannuel correspondante
         let moyenneSuiviPluriCorrespondante = matieresSuiviPluri.find((m2) => stringSimilarity.compareTwoStrings(m2.nom, m.nom) > 0.6);
-        // Si la moyenne n'est pas la même, on la renvoie
-        if(moyenneSuiviPluriCorrespondante.moyenne !== m.moyenne){
-            moyenneDifferentes.push({
-                // Moyenne "dernière note"
-                ancienneMoyenne: m.moyenne,
-                // Moyenne "suivi pluriannuel"
-                nouvelleMoyenne: moyenneSuiviPluriCorrespondante.moyenne,
-                // Nom de la matière dont la moyenne a bougé
-                matiere:    m.nom === "LV1" ? "Anglais"   :
-                            m.nom === "LV2" ? "Espagnol"  :
-                            (m.nom.charAt(0).toUpperCase()+m.nom.substring(1, m.nom.length).toLowerCase())
-            });
+        try {
+            // Si la moyenne n'est pas la même, on la renvoie
+            if(moyenneSuiviPluriCorrespondante.moyenne !== m.moyenne){
+                moyenneDifferentes.push({
+                    // Moyenne "dernière note"
+                    ancienneMoyenne: m.moyenne,
+                    // Moyenne "suivi pluriannuel"
+                    nouvelleMoyenne: moyenneSuiviPluriCorrespondante.moyenne,
+                    // Nom de la matière dont la moyenne a bougé
+                    matiere:    m.nom === "LV1" ? "Anglais"   :
+                                m.nom === "LV2" ? "Espagnol"  :
+                                (m.nom.charAt(0).toUpperCase()+m.nom.substring(1, m.nom.length).toLowerCase())
+                });
+            }
+        } catch(e){
+            console.log(moyenneSuiviPluriCorrespondante, m);
         }
     });
     return {
         diff: moyenneDifferentes,
-        moyPluri: reponse1.donneesSec.donnees.moyGenerale.V,
-        moyNormale: reponse2.donneesSec.donnees.listeDonnees.V.sort((a, b) => parseInt(b.L) - parseInt(a.L))[0].moyenne.V,
+        moyNormale: reponse1.donneesSec.donnees.moyGenerale.V,
+        moyPluri: reponse2.donneesSec.donnees.listeDonnees.V.sort((a, b) => parseInt(b.L) - parseInt(a.L))[0].moyenne.V,
     };
 };
 
