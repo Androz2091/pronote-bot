@@ -1,0 +1,29 @@
+{
+  "name": "pronote-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "pronote-bot.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Androz2091/pronote-bot.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Androz2091/pronote-bot/issues"
+  },
+  "homepage": "https://github.com/Androz2091/pronote-bot#readme",
+  "dependencies": {
+    "chalk": "^3.0.0",
+    "cron": "^1.7.2",
+    "instagram-private-api": "^1.37.1",
+    "instagram_mqtt": "github:Nerixyz/instagram_mqtt#6f62a16a0b85762be5fd4f421608c9aae7061565",
+    "json-beautify": "^1.1.1",
+    "puppeteer": "^2.0.0",
+    "require-reload": "^0.2.2",
+    "string-similarity": "^3.0.0"
+  }
+}
