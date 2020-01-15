@@ -24,7 +24,7 @@ module.exports.init = async (ig) => {
             let student = await fetchStudent(cred);
             if(!student) return;
             let diffData = student.getDifferences();
-            console.log('Cache retrieved. (session='+cred.username+')');
+            logger.log('Cache retrieved. (session='+cred.username+')');
             if(diffData.oldGenerale !== diffData.newGenerale){
                 logger.log("Differences detected. (session="+cred.username+")");
                 let finalString = `🔔PronoteBot [process.all]\n\nVotre moyenne est passée de ${diff.oldGenerale} à ${diff.newGenerale}.\n`;
