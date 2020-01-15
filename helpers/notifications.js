@@ -19,6 +19,7 @@ module.exports.init = async (ig) => {
         credentials = credentials.filter((c) => c.notif);
         // For each user
         await asyncForEach(credentials, async (cred) => {
+            let userStartAt = Date.now();
             logger.log("Cache check for "+cred.username+" started.", "info");
             let student = await fetchStudent(cred);
             if(!student) return;
@@ -43,7 +44,7 @@ module.exports.init = async (ig) => {
                 }
             }
             student.saveCache();
-            logger.log("Cache check for "+cred.username+" ended in "+(Date.now()-startAt)+"ms.", "info");
+            logger.log("Cache check for "+cred.username+" ended in "+(Date.now()-userStartAt)+"ms.", "info");
         });
         logger.log("Cache check ended in "+(Date.now()-startAt)+"ms.");
     };
