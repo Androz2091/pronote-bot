@@ -1,8 +1,16 @@
-config.json
-cache.json
-credentials.json
-node_modules/
+# Histories and caches
 data/
+# Pictures
+images/
+# Macos
 .DS_Store
+# Credentials
 state.json
+credentials.json
+config.json
+# Node modules
+node_modules/
 package-lock.json
+# Add examples
+!data/example
+!images/example.png

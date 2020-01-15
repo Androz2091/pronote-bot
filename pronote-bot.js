@@ -1,15 +1,14 @@
 const getClient = require("./instagram/getClient");
-const getMoyennes = require("./pronote/getMoyennes");
+const fetchStudent = require("./pronote/fetchStudent");
 const genConnectedPage = require("./pronote/genConnectedPage");
 const fs = require("fs");
 const logger = require("./helpers/logger");
 const beautify = require("json-beautify");
 const reload = require("require-reload")(require);
-const { writeFileSync, readFileSync, existsSync } = require("fs");
+const { writeFileSync, existsSync } = require("fs");
 const { sep } = require("path");
 
 if (!existsSync(__dirname+sep+"credentials.json")) writeFileSync(__dirname+sep+"credentials.json", [], "utf-8");
-if (!existsSync(__dirname+sep+"cache.json")) writeFileSync(__dirname+sep+"cache.json", [], "utf-8");
 
 let loginStates = [];
 
@@ -27,15 +26,22 @@ const helpPage =
 (async () => {
 
     let ig = await getClient();
-    logger.log("Client is ready.");
-    require("./helpers/autoNotif").init(ig);
+    let igWakeUp = Date.now();
+    logger.log("Client is ready.", "info");
+    require("./helpers/notifications").init(ig);
+
+    setTimeout(() => {
+        logger.log('Client is listening.', 'info');
+    }, 10000);
 
     ig.fbns.on("message", async (message) => {
 
         // Il peut y avoir de fausses notifications si le bot est démarré depuis moins de 10-20 secondes
-        if(process.uptime() < 10000){
+        if(Date.now()-igWakeUp < 10000){
             return;
         }
+
+        message.markAsSeen();
 
         let credentials = require("./credentials");
 
@@ -58,6 +64,7 @@ const helpPage =
                     let avatar = await page.evaluate(() => {
                         return $("body").find("img")[1].src;
                     });
+                    page.browser().close();
                     // If the credentials are correct
                     await message.reply("Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion.");
                     await message.reply(helpPage.replace("{{notifStatus}}", "🔔Notification activées"));
@@ -109,8 +116,8 @@ const helpPage =
         /* MOYENNES */
         else if(message.content === "!moy"){
             message.reply("Veuillez patienter...");
-            getMoyennes(message.author.credentials).then((moyennes) => {
-                message.reply("Moyennes:\n\nNormale: "+moyennes.moyNormale+"\nPluriannuelle: "+moyennes.moyPluri);
+            fetchStudent(message.author.credentials).then((student) => {
+                message.reply("Moyennes:\n\nNormale: "+student.moyenne+"\nPluriannuelle: "+student.moyennePluri);
             }).catch((e) => {
                 message.reply("Une erreur est survenue (e="+e+")");
             });

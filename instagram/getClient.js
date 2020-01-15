@@ -14,7 +14,7 @@ const { username, password } = require("../config.json");
 
 
 module.exports = () => {
-    return new Promise(async (resolve, reject) => {
+    return new Promise(async (resolve) => {
 
         // New IG Client
         const ig = withFbns(new IgApiClient());
@@ -31,7 +31,7 @@ module.exports = () => {
         });
 
         // When the auth informations are received, save them
-        ig.fbns.on("auth", async (auth) => {
+        ig.fbns.on("auth", async () => {
             await saveState(ig);
         });
 
