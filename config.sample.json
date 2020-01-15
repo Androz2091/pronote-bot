@@ -1,4 +1,11 @@
 {
-    "username": "insta username",
-    "password": "insta password"
+    "username": "instagram_username",
+    "password": "instagram_password",
+
+    "entLoginURL": "url_de_connexion_a_votre_ent",
+    "entHomePageURL": "url_de_la_page_accueil_de_votre_ent",
+    "pronoteURL": "url_de_votre_serveur_pronote",
+
+    "fullLog": true
+
 }
