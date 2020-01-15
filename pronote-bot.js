@@ -32,6 +32,11 @@ const helpPage =
 
     ig.fbns.on("message", async (message) => {
 
+        // Il peut y avoir de fausses notifications si le bot est démarré depuis moins de 10-20 secondes
+        if(process.uptime() < 10000){
+            return;
+        }
+
         let credentials = require("./credentials");
 
         if(loginStates.some((l) => l.insta === message.author.username)){
