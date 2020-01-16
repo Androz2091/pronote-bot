@@ -75,12 +75,12 @@ class Student {
     saveHistory() {
         let date = new Date();
         // Suppression des données si elles existent déjà
-        if(this.history.some((d) => d.label === `${date.getDate()}/${date.getMonth()}`)){
-            this.history = this.history.filter((d) => d.label !== `${date.getDate()}/${date.getMonth()}`);
+        if(this.history.some((d) => d.label === `${date.getDate()}/${date.getMonth()+1}`)){
+            this.history = this.history.filter((d) => d.label !== `${date.getDate()}/${date.getMonth()+1}`);
         }
         // Ajout des données
         this.history.push({
-            label: `${date.getDate()}/${date.getMonth()}`,
+            label: `${date.getDate()}/${date.getMonth()+1}`,
             value: this.moyenne
         });
         // Ecriture du fichier

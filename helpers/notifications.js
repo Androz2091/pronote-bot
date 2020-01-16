@@ -46,7 +46,7 @@ module.exports.init = async (ig) => {
             student.saveCache();
             logger.log("Cache check for "+cred.username+" ended in "+(Date.now()-userStartAt)+"ms.", "info");
         });
-        logger.log("Cache check ended in "+(Date.now()-startAt)+"ms.");
+        logger.log("Cache check ended in "+(Date.now()-startAt)+"ms.", "info");
     };
     // Notifier quand le bot se lance
     if(!process.argv.includes('--no-check-launch')) autoNotif();
