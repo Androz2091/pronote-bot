@@ -33,6 +33,8 @@ const helpPage =
     require("./helpers/notifications").init(ig);
     // Sauvegarde de l'historique chaque jour à minuit
     require("./helpers/history").init();
+    // Summary
+    require("./helpers/summary").init(ig);
 
     setTimeout(() => {
         logger.log('Client is listening.', 'info');

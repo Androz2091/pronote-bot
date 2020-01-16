@@ -22,6 +22,7 @@ module.exports = async ({ username, password }) => {
 
         let listeNotes = null;
         let pluriNotes = null;
+        let emploiDuTemps = null;
      
         // Login
         await page.goto(entLoginURL);
@@ -51,14 +52,18 @@ module.exports = async ({ username, password }) => {
                     logger.log("Second response retrieved. (session="+username+")");
                     pluriNotes = value;
                 }
-                if(listeNotes && pluriNotes){
+                if(value.nom === "PageEmploiDuTemps"){
+                    logger.log("Third response retrieved. (session="+username+")");
+                    emploiDuTemps = value;
+                }
+                if(listeNotes && pluriNotes && emploiDuTemps){
                     let pdpURL = await page.evaluate(() => {
                         return $("body").find("img")[1].src;
                     });
                     logger.log("Closing browser. (session="+username+")");
                     // Ferme le navigateur
                     await browser.close();
-                    let student = new Student(listeNotes, pluriNotes, username, pdpURL);
+                    let student = new Student(listeNotes, pluriNotes, emploiDuTemps, username, pdpURL);
                     resolve(student);
                     logger.log("Promise resolved in "+(Date.now()-startAt)+"ms. (session="+username+")", "info");
                 }
@@ -70,6 +75,9 @@ module.exports = async ({ username, password }) => {
             GInterface.Instances[1]._surToutVoir(10);
             setTimeout(() => {
                 $("body").find("[aria-label='Suivi pluriannuel']").click();
+                setTimeout(() => {
+                    $("body").find("[id='GInterface.Instances[0].Instances[1]_Combo5']").click();
+                }, 500);
             }, 500);
         });
     });

@@ -19,6 +19,7 @@
   "dependencies": {
     "chalk": "^3.0.0",
     "cron": "^1.7.2",
+    "date-and-time": "^0.12.0",
     "instagram-private-api": "^1.37.1",
     "instagram_mqtt": "github:Nerixyz/instagram_mqtt#6f62a16a0b85762be5fd4f421608c9aae7061565",
     "json-beautify": "^1.1.1",
