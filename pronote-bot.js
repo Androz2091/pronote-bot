@@ -72,7 +72,7 @@ const helpPage =
                         username: loginStates[i].username,
                         password: loginStates[i].password,
                         insta: message.author.username,
-                        notif: false,
+                        notif: true,
                         avatar
                     });
                     fs.writeFileSync("./credentials.json", beautify(credentials, null, 2, 100), "utf-8");
