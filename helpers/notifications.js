@@ -27,15 +27,15 @@ module.exports.init = async (ig) => {
             logger.log('Cache retrieved. (session='+cred.username+')');
             if(diffData.oldGenerale !== diffData.newGenerale){
                 logger.log("Differences detected. (session="+cred.username+")");
-                let finalString = `🔔PronoteBot [process.all]\n\nVotre moyenne est passée de ${diff.oldGenerale} à ${diff.newGenerale}.\n`;
+                let finalString = `🔔PronoteBot [process.all]\n\nVotre moyenne est passée de ${diffData.oldGenerale} à ${diffData.newGenerale}.\n`;
                 if(diffData.differences.length > 0){
                     logger.log("Subject differences detected. (session="+cred.username+")");
                     finalString += `Liste matières modifiées (${diffData.differences.length}) :\n\n`;
-                    moyennes.diff.forEach((m) => {
+                    diffData.differences.forEach((m) => {
                         finalString += m.matiereNom+" | "+m.oldMoyenne+" => "+m.newMoyenne+"\n"+
-                        ((parseFloat(m.nouvelleMoyenne.replace(",", "."))-parseFloat(m.ancienneMoyenne.replace(",", ".")) > 0) ?
-                        "Augmentation de "+String((parseFloat(m.nouvelleMoyenne.replace(",", "."))-parseFloat(m.ancienneMoyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s)." :
-                        "Baisse de "+String((parseFloat(m.nouvelleMoyenne.replace(",", "."))-parseFloat(m.ancienneMoyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s).")
+                        ((parseFloat(m.newMoyenne.replace(",", "."))-parseFloat(m.oldMoyenne.replace(",", ".")) > 0) ?
+                        "Augmentation de "+String((parseFloat(m.newMoyenne.replace(",", "."))-parseFloat(m.oldMoyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s)." :
+                        "Baisse de "+String((parseFloat(m.newMoyenne.replace(",", "."))-parseFloat(m.oldMoyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s).")
                     });
                     let user = new InstaUser(cred.insta, ig);
                     user.send(finalString);
