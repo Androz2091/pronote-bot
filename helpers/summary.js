@@ -20,7 +20,7 @@ module.exports.init = async (ig) => {
         // Load all credentials
         let credentials = require("../credentials.json");
         // keep only those who have notif enabled
-        credentials = credentials.filter((c) => c.username === "simon.lefort");
+        credentials = credentials.filter((c) => c.notif);
         // For each user
         await asyncForEach(credentials, async (cred) => {
             let userStartAt = Date.now();
