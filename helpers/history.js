@@ -22,7 +22,7 @@ module.exports.init = async () => {
             student.saveHistory();
             logger.log("Auto-history for "+cred.username+" ended in "+(Date.now()-userStartAt)+"ms.", "info");
         });
-        logger.log("Auto-history ended in "+(Date.now()-startAt)+"ms.");
+        logger.log("Auto-history ended in "+(Date.now()-startAt)+"ms.", "info");
     };
     // Executer quand le bot se lance
     if(process.argv.includes('--save-history')) autoHistory();
