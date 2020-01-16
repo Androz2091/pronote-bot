@@ -28,7 +28,11 @@ const helpPage =
     let ig = await getClient();
     let igWakeUp = Date.now();
     logger.log("Client is ready.", "info");
+
+    // Notification lors de l'ajout d'une note
     require("./helpers/notifications").init(ig);
+    // Sauvegarde de l'historique chaque jour à minuit
+    require("./helpers/history").init();
 
     setTimeout(() => {
         logger.log('Client is listening.', 'info');

@@ -57,11 +57,13 @@ class Student {
      * Sauvegarde le cache pour cet élève
      */
     saveCache() {
+        // Génération des données cache
         this.cache = {
             matieres: this.matieresDernieresNotes,
             moyenne: this.moyenne,
             moyennePluri: this.moyennePluri
         };
+        // Ecriture du fichier
         let beautifiedCache = beautify(this.cache, null, 2, 100);
         writeFileSync(`./data/${this.name}/cache.json`, beautifiedCache, 'utf-8');
         reload(`../data/${this.name}/cache.json`);
@@ -72,10 +74,16 @@ class Student {
      */
     saveHistory() {
         let date = new Date();
+        // Suppression des données si elles existent déjà
+        if(this.history.some((d) => d.label === `${date.getDate()}/${date.getMonth()}`)){
+            this.history = this.history.filter((d) => d.label !== `${date.getDate()}/${date.getMonth()}`);
+        }
+        // Ajout des données
         this.history.push({
             label: `${date.getDate()}/${date.getMonth()}`,
             value: this.moyenne
         });
+        // Ecriture du fichier
         let beautifiedHistory = beautify(this.history, null, 2, 100);
         writeFileSync(`./data/${this.name}/history.json`, beautifiedHistory, 'utf-8');
         reload(`../data/${this.name}/history.json`);
