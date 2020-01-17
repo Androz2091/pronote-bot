@@ -138,6 +138,9 @@ class Student {
         let exceptionnelCount = 0;
         let deplaceCount = 0;*/
         this.emploiDuTemps.forEach((h) => {
+            if(!h.matiere){
+                return console.log(h);
+            }
             if(h.annule){
                 //annuleCount++;
                 modifications.push(`🚫 | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`);
@@ -150,21 +153,14 @@ class Student {
             } else if(h.exceptionnel){
                 //exceptionnelCount++;
                 modifications.push(`🆕 | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`);
+            } else {
+                modifications.push(`⚪ | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`);
             }
         });
         if(modifications.length < 1) return false;
-        /*if(annuleCount > 0){
-            indicators.push(`🚫 Cours annulés: ${annuleCount}`);
-        } else if(deplaceCount > 0){
-            indicators.push(`⏱️ Cours déplacés: ${deplaceCount}`);
-        } else if(modifieCount > 0){
-            indicators.push(`✏️ Cours modifiés: ${modifieCount}`);
-        } else if(exceptionnelCount > 0){
-            indicators.push(`⚠️ Cours exceptionnels: ${exceptionnelCount}`);
-        }*/
         let dateTomorrow = new Date();
         dateTomorrow.setDate(dateTomorrow.getDate()+1);
-        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(dateTomorrow, 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n')}\n\nLégende:\n🆕: Cours ajoutés\n🚫: Cours annulés`;
+        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(dateTomorrow, 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n')}\n\nLégende:\n🆕: Cours ajoutés\n🚫: Cours annulés\n⚪: Cours normaux`;
     }
 
     /**
