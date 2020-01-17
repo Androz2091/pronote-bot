@@ -162,8 +162,18 @@ const helpPage =
             message.reply("Vous ne recevrez plus de notification lorsqu'une note est ajoutée sur Pronote... Tapez !notif pour réactiver cette option.");
         }
 
+        /* RECAP COMMAND */
+        else if(message.content === "!recap"){
+            message.reply("Veuillez patienter...");
+            fetchStudent(message.author.credentials).then((student) => {
+                message.reply(student.getSummary());
+            }).catch((e) => {
+                message.reply("Une erreur est survenue (e="+e+")");
+            });
+        }
+
         /* HELP COMMAND */
-        else if(message.content === "!help"){
+        else {
             await message.reply(helpPage.replace("{{notifStatus}}", (
                 message.author.credentials.notif ?
                 "🔔 Notifications activées" :
