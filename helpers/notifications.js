@@ -51,7 +51,7 @@ module.exports.init = async (ig) => {
     // Notifier quand le bot se lance
     if (process.options["check-for"]){
         autoNotif(process.options["check-for"]);
-    } else if (process.options["no-check-launch"]) {
+    } else if (!process.options["no-check-launch"]) {
         autoNotif();
     }
     // Notifier à 15h15
