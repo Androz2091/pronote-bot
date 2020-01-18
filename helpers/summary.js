@@ -38,7 +38,7 @@ module.exports.init = async (ig) => {
         logger.log("Summary messages ended in "+(Date.now()-startAt)+"ms.", "info");
     };
     // Notifier quand le bot se lance
-    if(process.argv.includes('--summary')) autoSummary();
+    if(process.options["summary"]) autoSummary();
     // Notifier à 22h30
     new CronJob("00 22 30 * * *", autoSummary, null, true, "Europe/Paris");
 };

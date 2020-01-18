@@ -7,6 +7,13 @@ const beautify = require("json-beautify");
 const reload = require("require-reload")(require);
 const { writeFileSync, existsSync } = require("fs");
 const { sep } = require("path");
+const commandLineArgs = require("command-line-args");
+const optionDefinitions = [
+    { name: "no-check-launch", alias: "ncl", type: Boolean },
+    { name: "summary", alias: "sum", type: Boolean },
+    { name: "checkfor", type: String, multiple: true }
+];
+process.options = optionDefinitions;
 
 if (!existsSync(__dirname+sep+"credentials.json")) writeFileSync(__dirname+sep+"credentials.json", [], "utf-8");
 

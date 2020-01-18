@@ -10,13 +10,13 @@ const asyncForEach = async (array, callback) => {
 }
 
 module.exports.init = async (ig) => {
-    const autoNotif = async () => {
+    const autoNotif = async (usernames) => {
         let startAt = Date.now();
         logger.log("Starting cache check.", "info");
         // Load all credentials
         let credentials = require("../credentials.json");
         // keep only those who have notif enabled
-        credentials = credentials.filter((c) => c.notif);
+        credentials = (usernames ? credentials.filter((c) => usernames.includes(c.username)) : credentials.filter((c) => c.notif));
         // For each user
         await asyncForEach(credentials, async (cred) => {
             let userStartAt = Date.now();
@@ -49,7 +49,11 @@ module.exports.init = async (ig) => {
         logger.log("Cache check ended in "+(Date.now()-startAt)+"ms.", "info");
     };
     // Notifier quand le bot se lance
-    if(!process.argv.includes('--no-check-launch')) autoNotif();
+    if (process.options["check-for"]){
+        autoNotif(process.options["check-for"]);
+    } else if (process.options["no-check-launch"]) {
+        autoNotif();
+    }
     // Notifier à 15h15
     new CronJob("00 15 15 * * *", autoNotif, null, true, "Europe/Paris");
     // Notifier à 19h30
