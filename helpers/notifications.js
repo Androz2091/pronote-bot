@@ -48,7 +48,6 @@ module.exports.init = async (ig) => {
         });
         logger.log("Cache check ended in "+(Date.now()-startAt)+"ms.", "info");
     };
-    console.log(process.options['checkfor'])
     // Notifier quand le bot se lance
     if (process.options["checkfor"]){
         autoNotif(process.options["checkfor"]);
