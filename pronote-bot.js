@@ -9,11 +9,11 @@ const { writeFileSync, existsSync } = require("fs");
 const { sep } = require("path");
 const commandLineArgs = require("command-line-args");
 const optionDefinitions = [
-    { name: "no-check-launch", alias: "ncl", type: Boolean },
-    { name: "summary", alias: "sum", type: Boolean },
-    { name: "checkfor", type: String, multiple: true }
+    { name: "no-check-launch", alias: "n", type: Boolean },
+    { name: "summary", alias: "s", type: Boolean },
+    { name: "checkfor", alias: "c", type: String, multiple: true }
 ];
-process.options = optionDefinitions;
+process.options = commandLineArgs(optionDefinitions);
 
 if (!existsSync(__dirname+sep+"credentials.json")) writeFileSync(__dirname+sep+"credentials.json", [], "utf-8");
 
