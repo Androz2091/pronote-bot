@@ -155,7 +155,7 @@ class Student {
             }
         });
         let tDate = new Date();
-        tDate.setDate(dateTomorrow.getDate()+(mustGetTomorrow ? 1 : 0));
+        tDate.setDate(tDate.getDate()+(mustGetTomorrow ? 1 : 0));
         return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(tDate, 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n\n')}\n\nArrivée possible: ${this.emploiDuTemps.shift().formattedDate}\nSortie possible: ${this.emploiDuTemps.pop().formattedEndDate}`;
     }
 
