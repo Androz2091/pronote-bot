@@ -1,0 +1,22 @@
+[
+
+    [ "FRANCAIS", "Français" ],
+    [ "MATHEMATIQUES", "Mathématiques" ],
+    [ "PHYSIQUE-CHIMIE", "Physique-Ch." ],
+    [ "LCA LATIN", "Latin" ],
+
+    [ "ESPAGNOL LV2 > Expr° Orale Continue", "Espagnol (EOC)" ],
+    [ "ESPAGNOL LV2 > Expr° Orale Interact", "Espagnol (EOI)" ],
+    [ "ESPAGNOL LV2 > Compréhension Orale", "Espagnol (CO)" ],
+    [ "ESPAGNOL LV2 > Expression Ecrite", "Espagol (EE)" ],
+
+    [ "ANGLAIS LV1 > Expression Ecrite", "Anglais (EE)" ],
+    [ "ANGLAIS LV1 > Expr° Orale Continue", "Anglais (EOC)" ],
+    [ "ANGLAIS LV1 > Compréhension Orale", "Anglais (CO)" ],
+    [ "ANGLAIS LV1 > Expr° Orale Interact", "Anglais (EOI" ],
+
+    [ "HISTOIRE-GEOGRAPHIE", "Histoire-Géo" ],
+    [ "ARTS PLASTIQUES", "Arts-Plast." ],
+    [ "SCIENCES VIE & TERRE", "SVT" ],
+    [ "TECHNOLOGIE", "Techno" ]
+]
