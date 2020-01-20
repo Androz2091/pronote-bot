@@ -130,7 +130,7 @@ const helpPage =
         else if(message.content === "!moy"){
             message.reply("Veuillez patienter...");
             fetchStudent(message.author.credentials).then((student) => {
-                message.reply("Moyennes:\n\nNormale: "+student.moyenne+"\nPluriannuelle: "+student.moyennePluri);
+                message.reply("Moyennes:\n\nNormale: "+(student.moyenne || "No data")+"\nPluriannuelle: "+student.moyennePluri);
             }).catch((e) => {
                 message.reply("Une erreur est survenue (e="+e+")");
             });
@@ -175,6 +175,7 @@ const helpPage =
             fetchStudent(message.author.credentials).then((student) => {
                 message.reply(student.getSummary());
             }).catch((e) => {
+                console.error(e);
                 message.reply("Une erreur est survenue (e="+e+")");
             });
         }
