@@ -43,6 +43,6 @@ module.exports.init = async (ig) => {
     } else if (!process.options["no-check-sum-launch"]) {
         autoSummary();
     }
-    // Notifier à 22h30
-    new CronJob("00 22 30 * * *", autoSummary, null, true, "Europe/Paris");
+    // Notifier à 6h30
+    new CronJob("00 6 30 * * *", autoSummary, null, true, "Europe/Paris");
 };
