@@ -45,7 +45,7 @@ class Student {
                 matiere: c.ListeContenus.V.find((v) => v.G === 16).L,
                 duree: c.duree,
                 date: date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'),
-                salle: c.ListeContenus.V.find((v) => v.G === 17).L,
+                salle: (c.ListeContenus.V.find((v) => v.G === 17) || { L: "Sport" }).L,
                 startDate,
                 endDate,
                 formattedDate: `${("0" + startDate.getHours()).slice(-2)}h${("0" + startDate.getMinutes()).slice(-2)}`,
