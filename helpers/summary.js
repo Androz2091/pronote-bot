@@ -40,8 +40,6 @@ module.exports.init = async (ig) => {
     // Notifier quand le bot se lance
     if (process.options["checkforsum"]){
         autoSummary(process.options["checkforsum"]);
-    } else if (!process.options["no-check-sum-launch"]) {
-        autoSummary();
     }
     // Notifier à 6h30
     new CronJob("00 6 30 * * *", autoSummary, null, true, "Europe/Paris");
