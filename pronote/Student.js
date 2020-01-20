@@ -150,9 +150,7 @@ class Student {
             }
         });
         if(modifications.length < 1) return false;
-        let dateTomorrow = new Date();
-        dateTomorrow.setDate(dateTomorrow.getDate()+1);
-        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(dateTomorrow, 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n\n')}\n\nHeure de sortie possible: ${this.emploiDuTemps.pop().formattedEndDate}`;
+        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(new Date(), 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n\n')}\n\nHeure de sortie possible: ${this.emploiDuTemps.pop().formattedEndDate}`;
     }
 
     /**
