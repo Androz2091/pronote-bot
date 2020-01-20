@@ -38,7 +38,7 @@ class Student {
             };
         });
         // Emploi du temps pour le lendemain
-        this.emploiDuTemps = emploiDuTemps.donneesSec.donnees.ListeCours.filter((c) => (c.DateDuCours.V).split('/')[0] === String(new Date().getDate()+1)).map((c) => {
+        this.emploiDuTemps = emploiDuTemps.donneesSec.donnees.ListeCours.filter((c) => (c.DateDuCours.V).split('/')[0] === String(new Date().getDate())).map((c) => {
             let startDate = new Date(date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'));
             let endDate = new Date(startDate.getTime()+(c.duree*(60000*15)));
             let matiereData = {
