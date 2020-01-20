@@ -28,7 +28,8 @@ const helpPage =
 `Voici la liste des commandes disponibles :
 
 !moy (affiche vos moyennes)
-!picture (affiche votre avatar)
+!picture (affiche votre photo)
+!recap (affiche infos sur la journée)
 !notif (active les notifications)
 !dénotif (désactive les notifications)
 
