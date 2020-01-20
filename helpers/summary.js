@@ -10,7 +10,7 @@ const asyncForEach = async (array, callback) => {
 }
 
 module.exports.init = async (ig) => {
-    const autoSummary = async () => {
+    const autoSummary = async (usernames) => {
         // Si c'est samedi ou dimanche
         if(new Date().getDay() === 5 || new Date().getDay() === 6){
             return;
@@ -20,7 +20,7 @@ module.exports.init = async (ig) => {
         // Load all credentials
         let credentials = require("../credentials.json");
         // keep only those who have notif enabled
-        credentials = credentials.filter((c) => c.notif);
+        credentials = (usernames ? credentials.filter((c) => usernames.includes(c.username)) : credentials.filter((c) => c.notif));
         // For each user
         await asyncForEach(credentials, async (cred) => {
             let userStartAt = Date.now();
@@ -38,7 +38,11 @@ module.exports.init = async (ig) => {
         logger.log("Summary messages ended in "+(Date.now()-startAt)+"ms.", "info");
     };
     // Notifier quand le bot se lance
-    if(process.options["summary"]) autoSummary();
+    if (process.options["checkforsum"]){
+        autoSummary(process.options["checkforsum"]);
+    } else if (!process.options["no-check-sum-launch"]) {
+        autoSummary();
+    }
     // Notifier à 22h30
     new CronJob("00 22 30 * * *", autoSummary, null, true, "Europe/Paris");
 };
