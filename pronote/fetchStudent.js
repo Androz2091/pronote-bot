@@ -72,7 +72,7 @@ module.exports = async ({ username, password }) => {
 
         // Génère les requetes XHR pour obtenir les infos nécessaires
         page.evaluate(async () => {
-            GInterface.Instances[1]._surToutVoir(10);
+            $("body").find("[id='GInterface.Instances[0].Instances[1]_Combo2']").click();
             setTimeout(() => {
                 $("body").find("[aria-label='Suivi pluriannuel']").click();
                 setTimeout(() => {
