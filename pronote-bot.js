@@ -179,7 +179,12 @@ const helpPage =
         else if(message.content === "!recap"){
             message.reply("Veuillez patienter...");
             fetchStudent(message.author.credentials).then((student) => {
-                message.reply(student.getSummary());
+                let sum = student.getSummary();
+                if(sum === 'unreachable'){
+                    return message.reply('EDT unreachable.');
+                } else {
+                    message.reply(sum);
+                }
             }).catch((e) => {
                 console.error(e);
                 message.reply("Une erreur est survenue (e="+e+")");

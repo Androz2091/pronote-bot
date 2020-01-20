@@ -37,27 +37,30 @@ class Student {
                 moyenne: matiere.moyEleve.V
             };
         });
-        // Emploi du temps pour le lendemain
-        this.emploiDuTemps = emploiDuTemps.donneesSec.donnees.ListeCours.filter((c) => (c.DateDuCours.V).split('/')[0] === String(new Date().getDate())).map((c) => {
-            let startDate = new Date(date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'));
-            let endDate = new Date(startDate.getTime()+(c.duree*(60000*15)));
-            let matiereData = {
-                matiere: c.ListeContenus.V.find((v) => v.G === 16).L,
-                duree: c.duree,
-                date: date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'),
-                salle: (c.ListeContenus.V.find((v) => v.G === 17) || { L: "Sport" }).L,
-                startDate,
-                endDate,
-                formattedDate: `${("0" + startDate.getHours()).slice(-2)}h${("0" + startDate.getMinutes()).slice(-2)}`,
-                formattedEndDate: `${("0" + endDate.getHours()).slice(-2)}h${("0" + endDate.getMinutes()).slice(-2)}`,
-                annule: c.estAnnule || false,
-                exceptionnel: (c.Statut && c.Statut === "Exceptionnel") || false,
-                modifie: (c.Statut && c.Statut === "Cours modifi\u00E9") || false,
-                deplace: (c.Statut && c.Statut === "Cours d\u00E9plac\u00E9") || false
-            };
-            matiereData.isValid = (!matiereData.annule);
-            return matiereData;
-        }).sort((a,b) => a.date - b.date);
+        let mustGetTomorrow = new Date().getHours() > 17;
+        if(!((new Date().getDay() === 5 && mustGetTomorrow) || new Date().getDay() === 6 || new Date().getDay() === 7)){
+            // Emploi du temps pour le lendemain
+            this.emploiDuTemps = emploiDuTemps.donneesSec.donnees.ListeCours.filter((c) => (c.DateDuCours.V).split('/')[0] === String(new Date().getDate()+(mustGetTomorrow ? 1 : 0))).map((c) => {
+                let startDate = new Date(date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'));
+                let endDate = new Date(startDate.getTime()+(c.duree*(60000*15)));
+                let matiereData = {
+                    matiere: c.ListeContenus.V.find((v) => v.G === 16).L,
+                    duree: c.duree,
+                    date: date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'),
+                    salle: (c.ListeContenus.V.find((v) => v.G === 17) || { L: "Sport" }).L,
+                    startDate,
+                    endDate,
+                    formattedDate: `${("0" + startDate.getHours()).slice(-2)}h${("0" + startDate.getMinutes()).slice(-2)}`,
+                    formattedEndDate: `${("0" + endDate.getHours()).slice(-2)}h${("0" + endDate.getMinutes()).slice(-2)}`,
+                    annule: c.estAnnule || false,
+                    exceptionnel: (c.Statut && c.Statut === "Exceptionnel") || false,
+                    modifie: (c.Statut && c.Statut === "Cours modifi\u00E9") || false,
+                    deplace: (c.Statut && c.Statut === "Cours d\u00E9plac\u00E9") || false
+                };
+                matiereData.isValid = (!matiereData.annule);
+                return matiereData;
+            }).sort((a,b) => a.date - b.date);
+        }
         // Nom de l'élève
         this.name = username;
         // Moyenne de l'élève
@@ -128,6 +131,8 @@ class Student {
      * Obtiens le résumé du lendemain pour l'utilisateur
      */
     getSummary() {
+        if(!this.emploiDuTemps) return 'unreachable';
+        let mustGetTomorrow = new Date().getHours() > 17;
         let duration = '';
         let numberOfHours = this.emploiDuTemps.map((c) => c.isValid && c.duree*15).reduce((p, c) => p+c)/60;
         let notInt = String(numberOfHours).includes('.');
@@ -149,8 +154,9 @@ class Student {
                 modifications.push(`🆕 | Cours exceptionnel\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}\nSalle: ${h.salle}`);
             }
         });
-        if(modifications.length < 1) return false;
-        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(new Date(), 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n\n')}\n\nHeure de sortie possible: ${this.emploiDuTemps.pop().formattedEndDate}`;
+        let tDate = new Date();
+        tDate.setDate(dateTomorrow.getDate()+(mustGetTomorrow ? 1 : 0));
+        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(tDate, 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n\n')}\n\nArrivée possible: ${this.emploiDuTemps.shift().formattedDate}\nSortie possible: ${this.emploiDuTemps.pop().formattedEndDate}`;
     }
 
     /**

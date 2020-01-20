@@ -41,6 +41,6 @@ module.exports.init = async (ig) => {
     if (process.options["checkforsum"]){
         autoSummary(process.options["checkforsum"]);
     }
-    // Notifier à 6h30
-    new CronJob("00 6 30 * * *", autoSummary, null, true, "Europe/Paris");
+    // Notifier à 18h30
+    new CronJob("00 18 06 * * *", autoSummary, null, true, "Europe/Paris");
 };
