@@ -6,14 +6,14 @@ const date = require('date-and-time');
 require('date-and-time/locale/fr');
 date.locale('fr');
 
+const formattedSubjects = require('../formatted_subjects.json');
+
 const formatMatiere = (nom) => {
-    if(nom === "SCIENCES VIE & TERRE"){
-        return "SVT";
+    let data = formattedSubjects.find((d) => d[0] === nom);
+    if(data){
+        return data[1];
     }
-    if(nom === "HISTOIRE-GEOGRAPHIE"){
-        return "Histoire-Géo";
-    }
-    return nom.chartAt(0).toUpperCase()+nom.substr(1, nom.length).toLowerCase();
+    return nom.charAt(0).toUpperCase()+nom.substr(1, nom.length).toLowerCase();
 };
 
 /**
@@ -32,7 +32,7 @@ class Student {
         this.matieresDernieresNotes = listeNotes.donneesSec.donnees.listeServices.V.map((matiere) => {
             return {
                 // nom de la matière
-                nom: matiere.L,
+                nom: formatMatiere(matiere.L),
                 // moyenne de l'élève
                 moyenne: matiere.moyEleve.V
             };
@@ -41,22 +41,27 @@ class Student {
         this.emploiDuTemps = emploiDuTemps.donneesSec.donnees.ListeCours.filter((c) => (c.DateDuCours.V).split('/')[0] === String(new Date().getDate()+1)).map((c) => {
             let startDate = new Date(date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'));
             let endDate = new Date(startDate.getTime()+(c.duree*(60000*15)));
-            return {
-                matiere: c.ListeContenus.V[0].L,
+            let matiereData = {
+                matiere: c.ListeContenus.V.find((v) => v.G === 16).L,
                 duree: c.duree,
                 date: date.parse(c.DateDuCours.V, 'DD/MM/YYYY HH:mm:ss'),
-                formattedDate: `${startDate.getHours()}h${startDate.getMinutes()}`,
-                formattedEndDate: `${endDate.getHours()}h${endDate.getMinutes()}`,
+                salle: c.ListeContenus.V.find((v) => v.G === 17).L,
+                startDate,
+                endDate,
+                formattedDate: `${("0" + startDate.getHours()).slice(-2)}h${("0" + startDate.getMinutes()).slice(-2)}`,
+                formattedEndDate: `${("0" + endDate.getHours()).slice(-2)}h${("0" + endDate.getMinutes()).slice(-2)}`,
                 annule: c.estAnnule || false,
                 exceptionnel: (c.Statut && c.Statut === "Exceptionnel") || false,
                 modifie: (c.Statut && c.Statut === "Cours modifi\u00E9") || false,
                 deplace: (c.Statut && c.Statut === "Cours d\u00E9plac\u00E9") || false
-            }
+            };
+            matiereData.isValid = (!matiereData.annule);
+            return matiereData;
         }).sort((a,b) => a.date - b.date);
         // Nom de l'élève
         this.name = username;
         // Moyenne de l'élève
-        this.moyenne = listeNotes.donneesSec.donnees.moyGenerale.V;
+        this.moyenne = listeNotes.donneesSec.donnees.moyGenerale.V.startsWith('|') ? null : listeNotes.donneesSec.donnees.moyGenerale.V;
         // Moyenne de l'élève (pluriannuelle)
         this.moyennePluri = pluriNotes.donneesSec.donnees.listeDonnees.V.sort((a, b) => parseInt(b.L) - parseInt(a.L))[0].moyenne.V;
         // Vérifier que tous les fichiers existent bien
@@ -111,7 +116,7 @@ class Student {
         // Ajout des données
         this.history.push({
             label: `${date.getDate()}/${date.getMonth()+1}`,
-            value: this.moyenne
+            value: this.moyenne || "ABS"
         });
         // Ecriture du fichier
         let beautifiedHistory = beautify(this.history, null, 2, 100);
@@ -124,43 +129,30 @@ class Student {
      */
     getSummary() {
         let duration = '';
-        let numberOfHours = this.emploiDuTemps.map((c) => c.duree*15).reduce((p, c) => p+c)/60;
+        let numberOfHours = this.emploiDuTemps.map((c) => c.isValid && c.duree*15).reduce((p, c) => p+c)/60;
         let notInt = String(numberOfHours).includes('.');
+        let [ hours, minutes ] = String(numberOfHours).split('.');
         if(notInt){
-            duration = numberOfHours+'h'+parseInt(String(numberOfHours.split('.')[1]))*60;
+            duration = `${hours}h${parseInt(minutes)*6}`;
         } else {
             duration = numberOfHours+'h';
         }
         let modifications = [];
-       /* let indicators = [];
-        let annuleCount = 0;
-        let modifieCount = 0;
-        let exceptionnelCount = 0;
-        let deplaceCount = 0;*/
         this.emploiDuTemps.forEach((h) => {
-            if(!h.matiere){
-                return console.log(h);
-            }
             if(h.annule){
-                //annuleCount++;
-                modifications.push(`🚫 | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`);
+                modifications.push(`🚫 | Cours annulé\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}`);
             } else if(h.modifie){
-                //modifieCount++;
-                modifications.push(`🆕 | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`);
+                modifications.push(`🆕 | Cours modifié\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}\nSalle: ${h.salle}`);
             } else if(h.deplace){
-                //deplaceCount++;
-                modifications.push(`🆕 | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`)
+                modifications.push(`🆕 | Cours déplacé\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}\nSalle: ${h.salle}`)
             } else if(h.exceptionnel){
-                //exceptionnelCount++;
-                modifications.push(`🆕 | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`);
-            } else {
-                modifications.push(`⚪ | ${formatMatiere(h.matiere)} | ${h.formattedDate} à ${h.formattedEndDate}`);
+                modifications.push(`🆕 | Cours exceptionnel\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}\nSalle: ${h.salle}`);
             }
         });
         if(modifications.length < 1) return false;
         let dateTomorrow = new Date();
         dateTomorrow.setDate(dateTomorrow.getDate()+1);
-        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(dateTomorrow, 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n')}\n\nLégende:\n🆕: Cours ajoutés\n🚫: Cours annulés\n⚪: Cours normaux`;
+        return `🔔Pronote Bot [process.sum]\n\nJournée du ${date.format(dateTomorrow, 'dddd D MMMM')}\nTotal: ${duration} de cours\n\n${modifications.join('\n\n')}\n\nHeure de sortie possible: ${this.emploiDuTemps.pop().formattedEndDate}`;
     }
 
     /**
@@ -168,6 +160,9 @@ class Student {
      */
     getDifferences() {
         if(Object.keys(this.cache).length === 0) return { oldGenerale: 0, newGenerale: 0, differences: [] };
+        if(!this.cache.moyenne){
+            return { oldGenerale: 0, newGenerale: 0, differences: [] };
+        }
         let differences = [];
         // Pour chaque matière du cache
         this.cache.matieres.forEach((matiereCache) => {
