@@ -22,9 +22,7 @@ module.exports = class InstaUser {
         return true;
     }
 
-    async sendImage(fileURL){
-        const imageRequest = await get({ url: fileURL, encoding: null });
-        let imgBuffer = Buffer.from(imageRequest, "binary");
+    async sendImage(imgBuffer){
         if(!this.id) await this.fetchID();
         if(!this.thread) await this.fetchThread();
         await this.thread.broadcastPhoto({ file: imgBuffer });

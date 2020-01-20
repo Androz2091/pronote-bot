@@ -7,6 +7,9 @@ const beautify = require("json-beautify");
 const reload = require("require-reload")(require);
 const { writeFileSync, existsSync } = require("fs");
 const { sep } = require("path");
+const { readFile } = require("fs");
+const { promisify } = require("util");
+const readFileAsync = promisify(readFile);
 const commandLineArgs = require("command-line-args");
 const optionDefinitions = [
     { name: "no-check-launch", alias: "n", type: Boolean },
@@ -141,7 +144,8 @@ const helpPage =
         /* PICTURE COMMAND */
         else if(message.content === "!picture"){
             await message.reply("Veuillez patienter...");
-            await message.replyImage(message.author.credentials.avatar);
+            let img = await readFileAsync('./images/'+message.author.credentials.username+'.png');
+            await message.replyImage(Buffer.from(img, 'binary'));
             message.reply("Voilà votre photo de profil Pronote!");
         }
 

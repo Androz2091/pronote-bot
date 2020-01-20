@@ -12,8 +12,8 @@ module.exports = class InstaMessage {
         this.author.send(content);
     }
 
-    async replyImage(fileURL){
-        this.author.sendImage(fileURL);
+    async replyImage(imgBuffer){
+        this.author.sendImage(imgBuffer);
     }
 
     async markAsSeen(){
