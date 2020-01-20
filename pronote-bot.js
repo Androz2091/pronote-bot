@@ -10,10 +10,10 @@ const { sep } = require("path");
 const commandLineArgs = require("command-line-args");
 const optionDefinitions = [
     { name: "no-check-launch", alias: "n", type: Boolean },
-    { name: "no-check-sum-launch", alias: "ns", type: Boolean },
+    { name: "no-check-sum-launch", alias: "N", type: Boolean },
     { name: "summary", alias: "s", type: Boolean },
     { name: "checkfor", alias: "c", type: String, multiple: true },
-    { name: "checkforsum", alias: "cs", type: String, multiple: true }
+    { name: "checkforsum", alias: "C", type: String, multiple: true }
 ];
 process.options = commandLineArgs(optionDefinitions);
 
