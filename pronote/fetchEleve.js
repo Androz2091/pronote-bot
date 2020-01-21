@@ -1,6 +1,6 @@
 const puppeteer = require("puppeteer");
 const logger = require("../helpers/logger");
-const Student = require('./Student');
+const Eleve = require('../structures/Eleve');
 const { entLoginURL, pronoteURL } = require('../config.json');
 
 const IsJsonString = (str) => {
