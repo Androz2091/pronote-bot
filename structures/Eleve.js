@@ -3,6 +3,15 @@ const beautify = require('json-beautify');
 const { get } = require("request-promise");
 const reload = require("require-reload")(require);
 
+const formattedSubjects = require('../matieres.json');
+const formatMatiere = (nom) => {
+    let data = formattedSubjects.find((d) => d[0] === nom);
+    if(data){
+        return data[1];
+    }
+    return nom.charAt(0).toUpperCase()+nom.substr(1, nom.length).toLowerCase();
+};
+
 const Journee = require('./Journee');
 
 /**
@@ -28,8 +37,9 @@ class Eleve {
         });
         let dates = [];
         emploiDuTemps.donneesSec.donnees.ListeCours.forEach((c) => {
-            if(!dates.includes((c.DateDuCours.V).split("/")[0])){
-                dates.push(c);
+            let coursDate = (c.DateDuCours.V).split("/")[0];
+            if(!dates.includes(coursDate)){
+                dates.push(coursDate);
             }
         });
         this.journees = dates.map((d) => new Journee(d, emploiDuTemps));
@@ -114,31 +124,13 @@ class Eleve {
         // Si la journée n'est pas trouvée (cela peut arriver car le lundi n'est pas chargé)
         if(!journee) return 'unreachable';
         let modifications = [];
-        this.emploiDuTemps.forEach((h) => {
-            if(h.annule){
-                modifications.push(`🚫 | Cours annulé\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}`);
-            } else if(h.modifie){
-                modifications.push(`🆕 | Cours modifié\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}\nSalle: ${h.salle}`);
-            } else if(h.deplace){
-                modifications.push(`🆕 | Cours déplacé\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}\nSalle: ${h.salle}`)
-            } else if(h.exceptionnel){
-                modifications.push(`🆕 | Cours exceptionnel\nMatière: ${formatMatiere(h.matiere)}\nHeure: de ${h.formattedDate} à ${h.formattedEndDate}\nSalle: ${h.salle}`);
-            }
+        journee.cours.forEach((cours) => {
+            if(cours.coursInfos) modifications.push(cours.coursInfos);
         });
+        console.log(modifications.length);
         if(modifications.length < 1 && auto) return false;
-        let message = 
-        `🔔Pronote Bot [process.sum]
-        
-        ${journee.dateInfos}
-        ${journee.durationInfos}
-
-        ${modifications.length < 1 ?
-            "Aucune modification d'emploi du temps" :
-            modifications.join("\n\n")
-        }
-
-        ${journee.arriveeInfos}
-        ${journee.sortieInfos}`;
+        console.log(modifications.length);
+        let message = `🔔Pronote Bot [process.sum]\n\n${journee.dateInfos}\n\n${journee.durationInfos}\n\n${modifications.length < 1 ? "Aucune modification d'emploi du temps." : modifications.join("\n\n") }\n\n${journee.arriveeInfos}\n${journee.sortieInfos}`;
         return message;
     }
 
