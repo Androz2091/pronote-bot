@@ -1,5 +1,5 @@
 const { CronJob } = require("cron");
-const fetchStudent = require("../pronote/fetchStudent");
+const fetchEleve = require("../pronote/fetchEleve");
 const logger = require("./logger");
 
 const asyncForEach = async (array, callback) => {
@@ -18,7 +18,7 @@ module.exports.init = async () => {
         await asyncForEach(credentials, async (cred) => {
             let userStartAt = Date.now();
             logger.log("Auto-history for "+cred.username+" started.", "info");
-            let student = await fetchStudent(cred);
+            let student = await fetchEleve(cred);
             student.saveHistory();
             logger.log("Auto-history for "+cred.username+" ended in "+(Date.now()-userStartAt)+"ms.", "info");
         });

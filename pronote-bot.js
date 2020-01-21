@@ -1,5 +1,5 @@
 const getClient = require("./instagram/getClient");
-const fetchStudent = require("./pronote/fetchStudent");
+const fetchEleve = require("./pronote/fetchEleve");
 const genConnectedPage = require("./pronote/genConnectedPage");
 const fs = require("fs");
 const logger = require("./helpers/logger");
@@ -135,7 +135,7 @@ const helpPage =
         /* MOYENNES */
         else if(message.content === "!moy"){
             message.reply("Veuillez patienter...");
-            fetchStudent(message.author.credentials).then((student) => {
+            fetchEleve(message.author.credentials).then((student) => {
                 message.reply("Moyennes:\n\nNormale: "+(student.moyenne || "No data")+"\nPluriannuelle: "+student.moyennePluri);
             }).catch((e) => {
                 message.reply("Une erreur est survenue (e="+e+")");
@@ -179,7 +179,7 @@ const helpPage =
         /* RECAP COMMAND */
         else if(message.content === "!recap"){
             message.reply("Veuillez patienter...");
-            fetchStudent(message.author.credentials).then((student) => {
+            fetchEleve(message.author.credentials).then((student) => {
                 let sum = student.getSummary();
                 if(sum === 'unreachable'){
                     return message.reply('EDT unreachable.');

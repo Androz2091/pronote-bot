@@ -1,5 +1,5 @@
 const { CronJob } = require("cron");
-const fetchStudent = require("../pronote/fetchStudent");
+const fetchEleve = require("../pronote/fetchEleve");
 const InstaUser = require("../instagram/InstaUser");
 const logger = require("./logger");
 
@@ -21,7 +21,7 @@ module.exports.init = async (ig) => {
         await asyncForEach(credentials, async (cred) => {
             let userStartAt = Date.now();
             logger.log("Cache check for "+cred.username+" started.", "info");
-            let student = await fetchStudent(cred);
+            let student = await fetchEleve(cred);
             if(!student) return;
             let diffData = student.getDifferences();
             logger.log('Cache retrieved. (session='+cred.username+')');
