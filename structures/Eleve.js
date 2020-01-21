@@ -2,9 +2,6 @@ const { writeFileSync, existsSync, mkdirSync, readFileSync } = require('fs');
 const beautify = require('json-beautify');
 const { get } = require("request-promise");
 const reload = require("require-reload")(require);
-const date = require('date-and-time');
-require('date-and-time/locale/fr');
-date.locale('fr');
 
 const Journee = require('./Journee');
 
@@ -30,10 +27,12 @@ class Eleve {
             };
         });
         let dates = [];
-        emploiDuTemps.donneesSec.donnees.ListeCours.map((c) => {
-            return (dates.includes((c.DateDuCours.V).split("/")[0])) ? null : c.push(dates);
+        emploiDuTemps.donneesSec.donnees.ListeCours.forEach((c) => {
+            if(!dates.includes((c.DateDuCours.V).split("/")[0])){
+                dates.push(c);
+            }
         });
-        this.journees = dates.map((d) => new Journee(date, emploiDuTemps));
+        this.journees = dates.map((d) => new Journee(d, emploiDuTemps));
         // Nom de l'élève
         this.name = username;
         // Moyenne de l'élève
