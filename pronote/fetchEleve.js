@@ -63,7 +63,7 @@ module.exports = async ({ username, password }) => {
                     logger.log("Closing browser. (session="+username+")");
                     // Ferme le navigateur
                     await browser.close();
-                    let student = new Student(listeNotes, pluriNotes, emploiDuTemps, username, pdpURL);
+                    let student = new Eleve(listeNotes, pluriNotes, emploiDuTemps, username, pdpURL);
                     resolve(student);
                     logger.log("Promise resolved in "+(Date.now()-startAt)+"ms. (session="+username+")", "info");
                 }
