@@ -115,7 +115,11 @@ class Eleve {
      */
     getSummary(auto) {
         // Si la journée à afficher est celle du lendemain
-        let mustGetTomorrow = new Date().getHours() > 17;
+        let mustGetTomorrow = false;
+        let journeeNow = this.journees.find((j) => j.date.getDate() === new Date().getDate());
+        if(Date.now() > journeeNow.coursEnd.getTime()){
+            mustGetTomorrow++;
+        }
         // Incrémente le jour à obtenir
         let date = new Date();
         if(mustGetTomorrow) date.setDate(date.getDate()+1);
@@ -127,9 +131,7 @@ class Eleve {
         journee.cours.forEach((cours) => {
             if(cours.coursInfos) modifications.push(cours.coursInfos);
         });
-        console.log(modifications.length);
         if(modifications.length < 1 && auto) return false;
-        console.log(modifications.length);
         let message = `🔔Pronote Bot [process.sum]\n\n${journee.dateInfos}\n\n${journee.durationInfos}\n\n${modifications.length < 1 ? "Aucune modification d'emploi du temps." : modifications.join("\n\n") }\n\n${journee.arriveeInfos}\n${journee.sortieInfos}`;
         return message;
     }
