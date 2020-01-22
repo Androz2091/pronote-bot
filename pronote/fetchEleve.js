@@ -2,53 +2,45 @@ const puppeteer = require("puppeteer");
 const logger = require("../helpers/logger");
 const Eleve = require('../structures/Eleve');
 const { entLoginURL, pronoteURL } = require('../config.json');
-const coordonnees = [
-    {
-        day: 1,
-        clip: {
-            x: 46,
-            y: 217,
-            height: 340,
-            width: 146
+
+/* CONCERNANT L'INTERFACE POUR CHANGER DE SEMAINE */
+// La largeur en pixel de la case des numéros de semaine
+const largeurCaseSemaine = 17;
+// Le nombre de semaine au totl
+const nombreSemaines = 44;
+
+/**
+ * Les coordonnées de la case de la semaine 1 sont
+ * X: 6
+ * Y: 167
+ */
+
+// Calcul des coordonnees pour chaque semaine
+const calculatedCoordonnees = [];
+for(let i = 0; i < nombreSemaines; i++){
+    calculatedCoordonnees.push({
+        numeroSemaine: i+1,
+        coordonnees: {
+            x: 6.5 + (i * largeurCaseSemaine),
+            y: 167
         }
-    },
-    {
-        day: 2,
-        clip: {
-            x: 193,
-            y: 217,
-            height: 340,
-            width: 146
-        }
-    },
-    {
-        day: 3,
-        clip: {
-            x: 340,
-            y: 217,
-            height: 340,
-            width: 146
-        }
-    },
-    {
-        day: 4,
-        clip: {
-            x: 488,
-            y: 217,
-            height: 340,
-            width: 146
-        }
-    },
-    {
-        day: 5,
-        clip: {
-            x: 634,
-            y: 217,
-            height: 340,
-            width: 146
-        }
-    }
-];
+    });
+};
+
+Date.prototype.getWeekNumber = function(){
+    var d = new Date(Date.UTC(this.getFullYear(), this.getMonth(), this.getDate()));
+    var dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(),0,1));
+    return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
+};
+
+// Calcul du numéro de semaine suivant
+let currentNumeroSemaine = 
+// Ajout de 17 pour l'année scolaire
+(new Date().getWeekNumber()+17)
+// Ajout de 1 pour récupérer la semaine suivante
++1;
 
 const IsJsonString = (str) => {
     try {
@@ -59,7 +51,7 @@ const IsJsonString = (str) => {
     }
 };
 
-module.exports = async ({ username, password }) => {
+module.exports = async ({ username, password }, fetchNextMonday) => {
     return new Promise(async(resolve) => {
 
         let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
@@ -69,7 +61,7 @@ module.exports = async ({ username, password }) => {
 
         let listeNotes = null;
         let pluriNotes = null;
-        let emploiDuTemps = null;
+        let emploiDuTemps = [];
      
         // Login
         await page.goto(entLoginURL);
@@ -100,10 +92,10 @@ module.exports = async ({ username, password }) => {
                     pluriNotes = value;
                 }
                 if(value.nom === "PageEmploiDuTemps"){
-                    logger.log("Third response retrieved. (session="+username+")");
-                    emploiDuTemps = value;
+                    logger.log("EDT response retrieved. (i="+emploiDuTemps.length+") (session="+username+")");
+                    emploiDuTemps.push(value);
                 }
-                if(listeNotes && pluriNotes && emploiDuTemps){
+                if(listeNotes && pluriNotes && (emploiDuTemps.length === fetchNextMonday ? 2 : 1)){
                     let pdpURL = await page.evaluate(() => {
                         return $("body").find("img")[1].src;
                     });
@@ -127,6 +119,12 @@ module.exports = async ({ username, password }) => {
                 }, 500);
             }, 500);
         });
+        if(fetchNextMonday){
+            setTimeout(() => {
+                let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
+                page.mouse.click(semaine.x, semaine.y);
+            }, 1500);
+        }
     });
  
 };

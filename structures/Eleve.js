@@ -21,11 +21,11 @@ class Eleve {
     /**
      * @param {Object} listeNotes Les notes affichées dans la section "Dernières Notes"
      * @param {Object} pluriNotes Les notes affichées dans le suivi pluriannuel
-     * @param {Object} emploiDuTemps L'emploi du temps de l'élève
+     * @param {Array<Object>} emploiDuTemps L'emploi du temps de l'élève
      * @param {Object} username Le prénom et le nom de l'élève
      * @param {String} pdpURL La photo de profil de l'élève
      */
-    constructor(listeNotes, pluriNotes, emploiDuTemps, username, pdpURL){
+    constructor(listeNotes, pluriNotes, emploisDuTemps, username, pdpURL){
         // Formate les matières correctement
         this.matieresDernieresNotes = listeNotes.donneesSec.donnees.listeServices.V.map((matiere) => {
             return {
@@ -35,14 +35,17 @@ class Eleve {
                 moyenne: matiere.moyEleve.V
             };
         });
-        let dates = [];
-        emploiDuTemps.donneesSec.donnees.ListeCours.forEach((c) => {
-            let coursDate = (c.DateDuCours.V).split("/")[0];
-            if(!dates.includes(coursDate)){
-                dates.push(coursDate);
-            }
-        });
-        this.journees = dates.map((d) => new Journee(d, emploiDuTemps));
+        this.journees = [];
+        for(let emploiDuTemps of emploisDuTemps){
+            let dates = [];
+            emploiDuTemps.donneesSec.donnees.ListeCours.forEach((c) => {
+                let coursDate = (c.DateDuCours.V).split("/")[0];
+                if(!dates.includes(coursDate)){
+                    dates.push(coursDate);
+                }
+            });
+            this.journees = this.journees.concat(dates.map((d) => new Journee(d, emploiDuTemps)));
+        }
         // Nom de l'élève
         this.name = username;
         // Moyenne de l'élève
@@ -110,22 +113,57 @@ class Eleve {
     }
 
     /**
+     * La date à obtenir lors de la récupération d'informations
+     */
+    get dateToGet () {
+        let currentDate = new Date();
+        let jourData = this.journees.find((j) => j.date.getDate() === currentDate.getDate());
+
+        // Si c'est un lundi, un mardi, un mercredi ou un jeudi
+        if(currentDate.getDay() === 7){
+            // Si les cours sont finis
+            if(Date.now() > jourData.coursEnd.getTime()){
+                // Jour suivant
+                return currentDate.getDate()+1;
+            } else {
+                // Jour actuel
+                return currentDate.getDate();
+            }
+        }
+
+        // Si c'est un vendredi
+        if(currentDate.getDay() === 5){
+            // Si les cours sont finis
+            if(Date.now() > jourData.coursEnd.getTime()){
+                // Lundi
+                return currentDate.getDate()+3;
+            } else {
+                // Jour actuel
+                return currentDate.getDate();
+            }
+        }
+
+        // Si c'est un samedi
+        if(currentDate.getDay() === 6){
+            // Lundi
+            return currentDate.getDate()+2;
+        }
+
+        // Si c'est un dimanche
+        if(currentDate.getDay() === 7){
+            // Lundi
+            return currentDate.getDate()+1;
+        }
+    }
+
+    /**
      * Obtiens le résumé du lendemain pour l'utilisateur
      * @param {Boolean} auto Si le summary est demandé par un process automatique
      */
     getSummary(auto) {
-        // Si la journée à afficher est celle du lendemain
-        let mustGetTomorrow = false;
-        let journeeNow = this.journees.find((j) => j.date.getDate() === new Date().getDate());
-        if(Date.now() > journeeNow.coursEnd.getTime()){
-            mustGetTomorrow++;
-        }
-        // Incrémente le jour à obtenir
-        let date = new Date();
-        if(mustGetTomorrow) date.setDate(date.getDate()+1);
         // Récupération de la journée
-        let journee = this.journees.find((j) => j.date.getDate() === date.getDate());
-        // Si la journée n'est pas trouvée (cela peut arriver car le lundi n'est pas chargé)
+        let journee = this.journees.find((j) => j.date.getDate() === this.dateToGet);
+        // Si la journée n'est pas trouvée (cela ne devrait jamais arriver)
         if(!journee) return 'unreachable';
         let modifications = [];
         journee.cours.forEach((cours) => {
