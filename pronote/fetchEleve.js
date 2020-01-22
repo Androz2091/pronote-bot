@@ -36,13 +36,6 @@ Date.prototype.getWeekNumber = function(){
     return Math.ceil((((d - yearStart) / 86400000) + 1)/7)
 };
 
-// Calcul du numéro de semaine suivant
-let currentNumeroSemaine = 
-// Ajout de 17 pour l'année scolaire
-(new Date().getWeekNumber()+17)
-// Ajout de 1 pour récupérer la semaine suivante
-+1;
-
 const IsJsonString = (str) => {
     try {
         JSON.parse(str);
@@ -53,6 +46,13 @@ const IsJsonString = (str) => {
 };
 
 module.exports = async ({ username, password }) => {
+    // Calcul du numéro de semaine suivant
+    let currentNumeroSemaine = 
+    // Ajout de 17 pour l'année scolaire
+    (new Date().getWeekNumber()+17)
+    // Ajout de 1 pour récupérer la semaine suivante
+    +1;
+    let fetchMonday = (new Date().getDay() === 5 || new Date().getDay() === 6 || new Date().getDay() === 7);
     return new Promise(async(resolve) => {
 
         let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
@@ -109,7 +109,7 @@ module.exports = async ({ username, password }) => {
                     logger.log("EDT response retrieved. (i="+emploiDuTemps.length+") (session="+username+")");
                     emploiDuTemps.push(value);
                 }
-                if(listeNotes && pluriNotes && emploiDuTemps.length === 2){
+                if(listeNotes && pluriNotes && (emploiDuTemps.length === (fetchMonday ? 2 : 1))){
                     resolveRequest();
                 }
             }
@@ -125,10 +125,12 @@ module.exports = async ({ username, password }) => {
                 }, 500);
             }, 500);
         });
-        setTimeout(() => {
-            let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
-            page.mouse.click(semaine.x, semaine.y);
-        }, 1500);
+        if(fetchMonday){
+            setTimeout(() => {
+                let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
+                page.mouse.click(semaine.x, semaine.y);
+            }, 1500);
+        }
         setTimeout(() => {
             if(!browserClosed){
                 resolveRequest(true);
