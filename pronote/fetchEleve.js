@@ -51,7 +51,7 @@ const IsJsonString = (str) => {
     }
 };
 
-module.exports = async ({ username, password }, fetchNextMonday) => {
+module.exports = async ({ username, password }) => {
     return new Promise(async(resolve) => {
 
         let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
@@ -95,7 +95,7 @@ module.exports = async ({ username, password }, fetchNextMonday) => {
                     logger.log("EDT response retrieved. (i="+emploiDuTemps.length+") (session="+username+")");
                     emploiDuTemps.push(value);
                 }
-                if(listeNotes && pluriNotes && (emploiDuTemps.length === fetchNextMonday ? 2 : 1)){
+                if(listeNotes && pluriNotes && emploiDuTemps.length === 2){
                     let pdpURL = await page.evaluate(() => {
                         return $("body").find("img")[1].src;
                     });
