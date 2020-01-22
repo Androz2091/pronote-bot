@@ -119,18 +119,6 @@ class Eleve {
         let currentDate = new Date();
         let jourData = this.journees.find((j) => j.date.getDate() === currentDate.getDate());
 
-        // Si c'est un lundi, un mardi, un mercredi ou un jeudi
-        if(currentDate.getDay() === 7){
-            // Si les cours sont finis
-            if(Date.now() > jourData.coursEnd.getTime()){
-                // Jour suivant
-                return currentDate.getDate()+1;
-            } else {
-                // Jour actuel
-                return currentDate.getDate();
-            }
-        }
-
         // Si c'est un vendredi
         if(currentDate.getDay() === 5){
             // Si les cours sont finis
@@ -153,6 +141,18 @@ class Eleve {
         if(currentDate.getDay() === 7){
             // Lundi
             return currentDate.getDate()+1;
+        }
+
+        // Si c'est un lundi, un mardi, un mercredi ou un jeudi
+        else {
+            // Si les cours sont finis
+            if(Date.now() > jourData.coursEnd.getTime()){
+                // Jour suivant
+                return currentDate.getDate()+1;
+            } else {
+                // Jour actuel
+                return currentDate.getDate();
+            }
         }
     }
 
