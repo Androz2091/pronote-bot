@@ -22,6 +22,8 @@ process.options = commandLineArgs(optionDefinitions);
 
 if (!existsSync(__dirname+sep+"credentials.json")) writeFileSync(__dirname+sep+"credentials.json", [], "utf-8");
 
+const commandsWait = {};
+
 let loginStates = [];
 
 const helpPage = 
@@ -63,6 +65,7 @@ const helpPage =
         message.markAsSeen();
 
         let credentials = require("./credentials");
+        let cooldown = commandsWait[message.author.username] && ((Date.now() - commandsWait[message.author.username]) < 20000);
 
         if(loginStates.some((l) => l.insta === message.author.username)){
             let i = loginStates.map((l) => l.insta).indexOf(message.author.username);
@@ -134,9 +137,15 @@ const helpPage =
 
         /* MOYENNES */
         else if(message.content === "!moy"){
+            if(cooldown){
+                return message.reply('⌛ Une requête est déjà en cours... merci de patienter!');
+            }
+            // Update cooldown
+            commandsWait[message.author.username] = Date.now();
             message.reply("Veuillez patienter...");
             fetchEleve(message.author.credentials).then((student) => {
                 message.reply("Moyennes:\n\nNormale: "+(student.moyenne || "No data")+"\nPluriannuelle: "+student.moyennePluri);
+                delete commandsWait[message.author.username];
             }).catch((e) => {
                 message.reply("Une erreur est survenue (e="+e+")");
             });
@@ -178,8 +187,14 @@ const helpPage =
 
         /* RECAP COMMAND */
         else if(message.content === "!recap"){
+            if(cooldown){
+                return message.reply('⌛ Une requête est déjà en cours... merci de patienter!');
+            }
+            // Update cooldown
+            commandsWait[message.author.username] = Date.now();
             message.reply("Veuillez patienter...");
             fetchEleve(message.author.credentials).then((student) => {
+                delete commandsWait[message.author.username];
                 let sum = student.getSummary();
                 if(sum === 'unreachable'){
                     return message.reply('EDT unreachable.');
