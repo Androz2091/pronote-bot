@@ -2,6 +2,7 @@ const puppeteer = require("puppeteer");
 const logger = require("../helpers/logger");
 const Eleve = require('../structures/Eleve');
 const { entLoginURL, pronoteURL } = require('../config.json');
+let browserClosed = false;
 
 /* CONCERNANT L'INTERFACE POUR CHANGER DE SEMAINE */
 // La largeur en pixel de la case des numéros de semaine
@@ -78,6 +79,19 @@ module.exports = async ({ username, password }) => {
         await page.goto(pronoteURL);
         await navPromise;
         
+        const resolveRequest = async (auto) => {
+            let pdpURL = await page.evaluate(() => {
+                return $("body").find("img")[1].src;
+            });
+            logger.log("Closing browser"+(auto ? 'automatically' : '')+". (session="+username+")");
+            // Ferme le navigateur
+            await browser.close();
+            browserClosed = true;
+            let student = new Eleve(listeNotes, pluriNotes, emploiDuTemps, username, pdpURL);
+            resolve(student);
+            logger.log("Promise resolved in "+(Date.now()-startAt)+"ms"+(auto ? 'with errors' :'')+". (session="+username+")", "info");
+        };
+
         logger.log("Detecting responses. (session="+username+")");
         page.on("response", async (res) => {
             let resText = await res.text();
@@ -96,15 +110,7 @@ module.exports = async ({ username, password }) => {
                     emploiDuTemps.push(value);
                 }
                 if(listeNotes && pluriNotes && emploiDuTemps.length === 2){
-                    let pdpURL = await page.evaluate(() => {
-                        return $("body").find("img")[1].src;
-                    });
-                    logger.log("Closing browser. (session="+username+")");
-                    // Ferme le navigateur
-                    await browser.close();
-                    let student = new Eleve(listeNotes, pluriNotes, emploiDuTemps, username, pdpURL);
-                    resolve(student);
-                    logger.log("Promise resolved in "+(Date.now()-startAt)+"ms. (session="+username+")", "info");
+                    resolveRequest();
                 }
             }
         });
@@ -123,6 +129,11 @@ module.exports = async ({ username, password }) => {
             let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
             page.mouse.click(semaine.x, semaine.y);
         }, 1500);
+        setTimeout(() => {
+            if(!browserClosed){
+                resolveRequest(true);
+            }
+        }, 3000);
     });
  
 };
