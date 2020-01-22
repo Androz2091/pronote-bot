@@ -119,12 +119,10 @@ module.exports = async ({ username, password }) => {
                 }, 500);
             }, 500);
         });
-        if(fetchNextMonday){
-            setTimeout(() => {
-                let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
-                page.mouse.click(semaine.x, semaine.y);
-            }, 1500);
-        }
+        setTimeout(() => {
+            let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
+            page.mouse.click(semaine.x, semaine.y);
+        }, 1500);
     });
  
 };
