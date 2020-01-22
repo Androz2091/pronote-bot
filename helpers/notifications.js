@@ -21,7 +21,7 @@ module.exports.init = async (ig) => {
         await asyncForEach(credentials, async (cred) => {
             let userStartAt = Date.now();
             logger.log("Cache check for "+cred.username+" started.", "info");
-            let student = await fetchEleve(cred);
+            let student = await fetchEleve(cred).catch(() => {});
             if(!student) return;
             let diffData = student.getDifferences();
             logger.log('Cache retrieved. (session='+cred.username+')');
