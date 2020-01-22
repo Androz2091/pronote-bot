@@ -2,6 +2,53 @@ const puppeteer = require("puppeteer");
 const logger = require("../helpers/logger");
 const Eleve = require('../structures/Eleve');
 const { entLoginURL, pronoteURL } = require('../config.json');
+const coordonnees = [
+    {
+        day: 1,
+        clip: {
+            x: 46,
+            y: 217,
+            height: 340,
+            width: 146
+        }
+    },
+    {
+        day: 2,
+        clip: {
+            x: 193,
+            y: 217,
+            height: 340,
+            width: 146
+        }
+    },
+    {
+        day: 3,
+        clip: {
+            x: 340,
+            y: 217,
+            height: 340,
+            width: 146
+        }
+    },
+    {
+        day: 4,
+        clip: {
+            x: 488,
+            y: 217,
+            height: 340,
+            width: 146
+        }
+    },
+    {
+        day: 5,
+        clip: {
+            x: 634,
+            y: 217,
+            height: 340,
+            width: 146
+        }
+    }
+];
 
 const IsJsonString = (str) => {
     try {
