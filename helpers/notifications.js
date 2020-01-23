@@ -29,16 +29,10 @@ module.exports.init = async (ig) => {
                 logger.log("Differences detected. (session="+cred.username+")");
                 let finalString = `🔔PronoteBot [process.all]\n\nVotre moyenne est passée de ${diffData.oldGenerale} à ${diffData.newGenerale}.\n`;
                 if(diffData.differences.length > 0){
-                    logger.log("Subject differences detected. (session="+cred.username+")");
+                    logger.log("Differences detected. (session="+cred.username+")");
                     finalString += `Liste matières modifiées (${diffData.differences.length}) :\n\n`;
-                    diffData.differences.forEach((m) => {
-                        finalString += m.matiereNom+" | "+m.oldMoyenne+" => "+m.newMoyenne+"\n"+
-                        ((parseFloat(m.newMoyenne.replace(",", "."))-parseFloat(m.oldMoyenne.replace(",", ".")) > 0) ?
-                        "Augmentation de "+String((parseFloat(m.newMoyenne.replace(",", "."))-parseFloat(m.oldMoyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s)." :
-                        "Baisse de "+String((parseFloat(m.newMoyenne.replace(",", "."))-parseFloat(m.oldMoyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s).")
-                    });
                     let user = new InstaUser(cred.insta, ig);
-                    user.send(finalString);
+                    user.send(`${finalString}${diffData.differences.join('\n\n')}`);
                 } else {
                     logger.log("No subject differences detected. (session="+cred.username+")");
                 }
