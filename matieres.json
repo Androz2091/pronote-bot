@@ -2,7 +2,7 @@
 
     [ "FRANCAIS", "Français" ],
     [ "MATHEMATIQUES", "Mathématiques" ],
-    [ "PHYSIQUE-CHIMIE", "Physique-Ch." ],
+    [ "PHYSIQUE-CHIMIE", "Physique Chimie" ],
     [ "LCA LATIN", "Latin" ],
 
     [ "ESPAGNOL LV2 > Expr° Orale Continue", "Espagnol (EOC)" ],
@@ -16,7 +16,7 @@
     [ "ANGLAIS LV1 > Expr° Orale Interact", "Anglais (EOI" ],
 
     [ "HISTOIRE-GEOGRAPHIE", "Histoire-Géo" ],
-    [ "ARTS PLASTIQUES", "Arts-Plast." ],
+    [ "ARTS PLASTIQUES", "Arts Plastiques" ],
     [ "SCIENCES VIE & TERRE", "SVT" ],
     [ "TECHNOLOGIE", "Techno" ]
 ]
