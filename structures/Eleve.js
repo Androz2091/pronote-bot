@@ -4,12 +4,12 @@ const { get } = require("request-promise");
 const reload = require("require-reload")(require);
 
 const formattedSubjects = require('../matieres.json');
-const formatMatiere = (nom) => {
-    let data = formattedSubjects.find((d) => d[0] === nom);
+const formatMatiere = (nom, reverse) => {
+    let data = formattedSubjects.find((d) => (reverse ? d[1] : d[0]) === nom);
     if(data){
-        return data[1];
+        return reverse ? data[0] : data[1];
     }
-    return nom.charAt(0).toUpperCase()+nom.substr(1, nom.length).toLowerCase();
+    return reverse ? nom : nom.charAt(0).toUpperCase()+nom.substr(1, nom.length).toLowerCase();
 };
 
 const Journee = require('./Journee');
@@ -82,7 +82,10 @@ class Eleve {
     saveCache() {
         // Génération des données cache
         this.cache = {
-            matieres: this.matieresDernieresNotes,
+            matieres: this.matieresDernieresNotes.map((m) => {
+                m.nom = formatMatiere(m.nom, true);
+                return m;
+            }),
             moyenne: this.moyenne,
             moyennePluri: this.moyennePluri
         };
@@ -184,17 +187,22 @@ class Eleve {
         }
         let differences = [];
         // Pour chaque matière du cache
-        this.cache.matieres.forEach((matiereCache) => {
-            let matiereActu = this.matieresDernieresNotes.find((m) => m.nom === matiereCache.nom);
-            if(!matiereActu) return;
-            // S'il y a une différence de moyenne
-            if(matiereCache.moyenne !== matiereActu.moyenne){
-                differences.push({
-                    matiereNom: matiereCache.nom,
-                    oldMoyenne: matiereCache.moyenne,
-                    newMoyenne: matiereActu.moyenne
-                });
+        this.matieresDernieresNotes.forEach((matiere) => {
+            let matiereCache = this.cache.matieres.find((m) => formatMatiere(m.nom) === matiere.nom);
+            if(!matiereCache){
+                // Si la moyenne n'existait pas dans le cache
+                differences.push(`Nouvelle moyenne en ${matiere.nom}: ${matiere.moyenne}/20`);
+            } else {
+                // S'il y a une différence de moyenne
+                if(matiereCache.moyenne !== matiere.moyenne){
+                    differences.push(`${matiere.nom} | ${matiereCache.moyenne} => ${matiere.moyenne}\n`+
+                        ((parseFloat(matiere.moyenne.replace(",", "."))-parseFloat(matiereCache.moyenne.replace(",", ".")) > 0) ?
+                        "Augmentation de "+String((parseFloat(matiere.moyenne.replace(",", "."))-parseFloat(matiereCache.moyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s)." :
+                        "Baisse de "+String((parseFloat(matiere.moyenne.replace(",", "."))-parseFloat(matiereCache.moyenne.replace(",", "."))).toFixed(2)).replace(".", ",")+" point(s).")
+                    );
+                }
             }
+            return differences;
         });
         return {
             // Moyenne générale du cache
