@@ -126,16 +126,25 @@ module.exports = async ({ username, password }) => {
             }, 500);
         });
         if(fetchMonday){
-            setTimeout(() => {
+            let interval = setInterval(clickWeek, 1500);
+            async function clickWeek () {
+                let isOk = await page.evaluate(async ({ currentNumeroSemaine }) => {
+                    return Boolean($('body').find(`[id="GInterface.Instances[1].Instances[0]_j_${currentNumeroSemaine}"]`).length);
+                }, { currentNumeroSemaine });
+                if(!isOk || page.isClosed()){
+                    logger.log(`Not loaded= ${!isOk}, Is closed= ${page.isClosed()} (session=${username})`, "info");
+                    return;
+                }
+                clearInterval(interval);
                 let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
                 page.mouse.click(semaine.x, semaine.y);
-            }, 1500);
+            }
         }
         setTimeout(() => {
             if(!browserClosed){
                 resolveRequest(true);
             }
-        }, 3000);
+        }, 10000);
     });
  
 };
