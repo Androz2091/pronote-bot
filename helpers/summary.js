@@ -11,8 +11,8 @@ const asyncForEach = async (array, callback) => {
 
 module.exports.init = async (ig) => {
     const autoSummary = async (usernames) => {
-        // Si c'est samedi ou dimanche
-        if(new Date().getDay() === 5 || new Date().getDay() === 6){
+        // Si c'est vendredi, samedi ou dimanche
+        if(usernames.length === 0 && (new Date().getDay() === 5 || new Date().getDay() === 6 || new Date().getDay() === 7)){
             return;
         }
         let startAt = Date.now();
