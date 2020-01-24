@@ -35,8 +35,8 @@ class Journee {
         this.numberOfHoursMS = this.cours.filter((c) => !c.isRemoved).map((c) => c.duration).reduce((p, c) => p+c);
         this.numberOfHours = this.numberOfHoursMS/3600000;
         // Debut et fin des cours
-        this.coursStart = new Date(this.cours[0].startDate);
-        this.coursEnd = new Date(this.cours[this.cours.length-1].endDate);
+        this.coursStart = new Date(this.cours.filter((c) => !c.isRemoved)[0].startDate);
+        this.coursEnd = new Date(this.cours.filter((c) => !c.isRemoved)[this.cours.filter((c) => !c.isRemoved).length-1].endDate);
         // Date de la journée
         this.date = new Date(this.coursStart);
     }
