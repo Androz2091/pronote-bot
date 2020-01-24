@@ -84,7 +84,7 @@ class Eleve {
         this.cache = {
             matieres: this.matieresDernieresNotes
             .filter((m) => {
-                return !m.startsWith('|');
+                return !m.nom.startsWith('|');
             }).map((m) => {
                 m.nom = formatMatiere(m.nom, true);
                 return m;
