@@ -122,29 +122,32 @@ module.exports = async ({ username, password }) => {
                 $("body").find("[aria-label='Suivi pluriannuel']").click();
                 setTimeout(() => {
                     $("body").find("[id='GInterface.Instances[0].Instances[1]_Combo5']").click();
-                }, 500);
+                }, 1000);
             }, 500);
         });
         if(fetchMonday){
-            let interval = setInterval(clickWeek, 1500);
-            async function clickWeek () {
-                let isOk = await page.evaluate(async ({ currentNumeroSemaine }) => {
-                    return Boolean($('body').find(`[id="GInterface.Instances[1].Instances[0]_j_${currentNumeroSemaine}"]`).length);
-                }, { currentNumeroSemaine });
-                if(!isOk || page.isClosed()){
-                    logger.log(`Not loaded= ${!isOk}, Is closed= ${page.isClosed()} (session=${username})`, "info");
-                    return;
+            setTimeout(() => {
+                logger.log('Fetching monday... (session='+username+')', 'log')
+                let interval = setInterval(clickWeek, 1500);
+                async function clickWeek () {
+                    logger.log('Evaluating page... (session='+username+')', 'log')
+                    let isOk = await page.evaluate(async ({ currentNumeroSemaine }) => {
+                        return Boolean($('body').find(`[id="GInterface.Instances[1].Instances[0]_j_${currentNumeroSemaine}"]`).length);
+                    }, { currentNumeroSemaine });
+                    if(!isOk || page.isClosed()){
+                        logger.log(`Not loaded= ${!isOk}, Is closed= ${page.isClosed()} (session=${username})`, "info");
+                        return;
+                    }
+                    logger.log('Clearing interval, found... (session='+username+')', 'log');
+                    clearInterval(interval);
+                    let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
+                    page.mouse.click(semaine.x, semaine.y);
+                    setTimeout(() => {
+                        if(!browserClosed) resolveRequest(true);
+                    }, 10000);
                 }
-                clearInterval(interval);
-                let semaine = calculatedCoordonnees.find((s) => s.numeroSemaine === currentNumeroSemaine).coordonnees;
-                page.mouse.click(semaine.x, semaine.y);
-            }
+            }, 1000)
         }
-        setTimeout(() => {
-            if(!browserClosed){
-                resolveRequest(true);
-            }
-        }, 10000);
     });
  
 };
