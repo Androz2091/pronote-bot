@@ -82,7 +82,10 @@ class Eleve {
     saveCache() {
         // Génération des données cache
         this.cache = {
-            matieres: this.matieresDernieresNotes.map((m) => {
+            matieres: this.matieresDernieresNotes
+            .filter((m) => {
+                return !m.startsWith('|');
+            }).map((m) => {
                 m.nom = formatMatiere(m.nom, true);
                 return m;
             }),
