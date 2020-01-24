@@ -18,7 +18,7 @@ class Cours {
 
     constructor(coursData){
         // Le nom de la matière
-        this.matiere = formatMatiere(coursData.ListeContenus.V.find((v) => v.G === 16) || { L: 'Unknown' }).L;
+        this.matiere = formatMatiere((coursData.ListeContenus.V.find((v) => v.G === 16) || { L: 'Unknown' }).L);
         // La durée du cours en millisecondes
         this.duration = (coursData.duree*15)*60*1000;
         // La date de début de cours
