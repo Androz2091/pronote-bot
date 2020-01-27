@@ -21,7 +21,8 @@ module.exports = () => {
         // If there's already auth informations
         await readState(ig);
         // Log in Instagram
-        await loginToInstagram(ig);
+        let auth = await loginToInstagram(ig);
+        ig.authPk = auth.pk;
 
         // When a message is received, emit another event with the formatted message
         ig.fbns.on("direct_v2_message", data => {
@@ -60,5 +61,6 @@ async function readState(ig) {
 
 async function loginToInstagram(ig) {
     ig.request.end$.subscribe(() => saveState(ig));
-    await ig.account.login(username, password);
+    let auth = await ig.account.login(username, password);
+    return auth;
 }
