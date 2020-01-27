@@ -47,13 +47,13 @@ class Journee {
         this.numberOfHours = this.numberOfHoursMS / 3600000;
 
         // Debut et fin des cours
-        this.coursStart = new Date(
-            this.cours.filter(c => !c.isRemoved)[0].startDate
+        this.firstCours = new Date(
+            this.cours.filter(c => !c.isRemoved)[0]
         );
-        this.coursEnd = new Date(
+        this.lastCours = new Date(
             this.cours.filter(c => !c.isRemoved)[
                 this.cours.filter(c => !c.isRemoved).length - 1
-            ].endDate
+            ]
         );
         // Date de la journée
         this.date = new Date(this.coursStart);
@@ -83,16 +83,14 @@ class Journee {
      * Information pour les arrivées possibles
      */
     get arriveeInfos() {
-        return `Arrivée possible: ${this.cours[0].formattedStartDate}`;
+        return `Arrivée possible: ${this.firstCours.formattedStartDate}`;
     }
 
     /**
      * Information pour les sorties possibles
      */
     get sortieInfos() {
-        return `Sortie possible: ${
-            this.cours[this.cours.length - 1].formattedEndDate
-        }`;
+        return `Sortie possible: ${this.lastCours.formattedEndDate}`;
     }
 }
 
