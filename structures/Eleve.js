@@ -150,7 +150,7 @@ class Eleve {
         // Si c'est un vendredi
         if (currentDate.getDay() === 5) {
             // Si les cours sont finis
-            if (Date.now() > jourData.coursEnd.getTime()) {
+            if (Date.now() > jourData.lastCours.endDate.getTime()) {
                 // Lundi
                 return currentDate.getDate() + 3;
             } else {
