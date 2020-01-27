@@ -28,7 +28,7 @@ module.exports.run = async (igClient) => {
         friendshipsToCreate.push(userId);
     });
     
-    logger.log(`${friendshipsToCreate.length} friendships will be created.`);
+    logger.log(`${friendshipsToCreate.length} friendships will be created.`, "info");
     await asyncForEach(friendshipsToCreate, async (userId) => {
         // Abonnement
         await igClient.friendship.create(userId);
