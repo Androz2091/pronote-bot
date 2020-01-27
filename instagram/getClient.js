@@ -12,10 +12,8 @@ const existsAsync = promisify(exists);
 
 const { username, password } = require("../config.json");
 
-
 module.exports = () => {
-    return new Promise(async (resolve) => {
-
+    return new Promise(async resolve => {
         // New IG Client
         const ig = withFbns(new IgApiClient());
         ig.state.generateDevice(username);
@@ -26,7 +24,7 @@ module.exports = () => {
         await loginToInstagram(ig);
 
         // When a message is received, emit another event with the formatted message
-        ig.fbns.on("direct_v2_message", (data) => {
+        ig.fbns.on("direct_v2_message", data => {
             ig.fbns.emit("message", new InstaMessage(data, ig));
         });
 
@@ -44,13 +42,20 @@ module.exports = () => {
 };
 
 async function saveState(ig) {
-    return writeFileAsync(__dirname+sep+"state.json", await ig.exportState(), { encoding: "utf8" });
+    return writeFileAsync(
+        __dirname + sep + "state.json",
+        await ig.exportState(),
+        { encoding: "utf8" }
+    );
 }
 
 async function readState(ig) {
-    if (!await existsAsync(__dirname+sep+"state.json"))
-        return;
-    await ig.importState(await readFileAsync(__dirname+sep+"state.json", { encoding: "utf8" }));
+    if (!(await existsAsync(__dirname + sep + "state.json"))) return;
+    await ig.importState(
+        await readFileAsync(__dirname + sep + "state.json", {
+            encoding: "utf8"
+        })
+    );
 }
 
 async function loginToInstagram(ig) {

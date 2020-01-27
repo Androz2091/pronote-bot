@@ -27,5 +27,8 @@
     "puppeteer": "^2.0.0",
     "require-reload": "^0.2.2",
     "string-similarity": "^3.0.0"
+  },
+  "devDependencies": {
+    "prettier": "^1.19.1"
   }
 }

@@ -3,10 +3,10 @@ const fetchEleve = require("../pronote/fetchEleve");
 const logger = require("./logger");
 
 const asyncForEach = async (array, callback) => {
-  for (let index = 0; index < array.length; index++) {
-    await callback(array[index], index, array)
-  }
-}
+    for (let index = 0; index < array.length; index++) {
+        await callback(array[index], index, array);
+    }
+};
 
 module.exports.init = async () => {
     const autoHistory = async () => {
@@ -15,17 +15,30 @@ module.exports.init = async () => {
         // Load all credentials
         let credentials = require("../credentials.json");
         // For each user
-        await asyncForEach(credentials, async (cred) => {
+        await asyncForEach(credentials, async cred => {
             let userStartAt = Date.now();
-            logger.log("Auto-history for "+cred.username+" started.", "info");
+            logger.log(
+                "Auto-history for " + cred.username + " started.",
+                "info"
+            );
             let student = await fetchEleve(cred);
             student.saveHistory();
-            logger.log("Auto-history for "+cred.username+" ended in "+(Date.now()-userStartAt)+"ms.", "info");
+            logger.log(
+                "Auto-history for " +
+                    cred.username +
+                    " ended in " +
+                    (Date.now() - userStartAt) +
+                    "ms.",
+                "info"
+            );
         });
-        logger.log("Auto-history ended in "+(Date.now()-startAt)+"ms.", "info");
+        logger.log(
+            "Auto-history ended in " + (Date.now() - startAt) + "ms.",
+            "info"
+        );
     };
     // Executer quand le bot se lance
-    if(process.argv.includes('--save-history')) autoHistory();
+    if (process.argv.includes("--save-history")) autoHistory();
     // Tous les jours à minuit
     new CronJob("00 00 00 * * *", autoHistory, null, true, "Europe/Paris");
 };
