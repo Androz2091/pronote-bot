@@ -15,7 +15,10 @@ const asyncForEach = async (array, callback) => {
     }
 };
 
+const delay = ms => new Promise(res => setTimeout(res, ms));
+
 module.exports = {
     formatMatiere,
-    asyncForEach
+    asyncForEach,
+    delay
 };
