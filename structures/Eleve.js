@@ -174,7 +174,7 @@ class Eleve {
         // Si c'est un lundi, un mardi, un mercredi ou un jeudi
         else {
             // Si les cours sont finis
-            if (Date.now() > jourData.coursEnd.getTime()) {
+            if (Date.now() > jourData.lastCours.endDate.getTime()) {
                 // Jour suivant
                 return currentDate.getDate() + 1;
             } else {
