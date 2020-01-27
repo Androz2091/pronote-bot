@@ -56,7 +56,7 @@ class Journee {
             ]
         );
         // Date de la journée
-        this.date = new Date(this.coursStart);
+        this.date = new Date(this.firstCours.startDate);
     }
 
     /**
