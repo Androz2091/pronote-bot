@@ -19,6 +19,9 @@ module.exports.run = async (igClient) => {
     followers.forEach((f) => {
         // Si le bot est abonné
         if(following.includes(f)) return;
+        // Si le compte est privé
+        let isPrivate = followersFeedResponse.find((u) => u.username === f).is_private;
+        if(isPrivate) return;
         // Récupération de l'ID de l'utilisateur
         let userId = followersFeedResponse.find((u) => u.username === f).pk;
         // Ajout à la queue
