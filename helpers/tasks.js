@@ -20,6 +20,13 @@ module.exports = async igClient => {
                 "Europe/Paris"
             );
         });
+        if(task.infos.fbnsEvents){
+            task.infos.fbnsEvents.forEach((e) => {
+                igClient.fbns.on(e, () => {
+                    task.run(igClient);
+                });
+            });
+        }
         task.name = file.split(".")[0];
         tasks.push(task);
     });
