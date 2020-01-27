@@ -47,14 +47,10 @@ class Journee {
         this.numberOfHours = this.numberOfHoursMS / 3600000;
 
         // Debut et fin des cours
-        this.firstCours = new Date(
-            this.cours.filter(c => !c.isRemoved)[0]
-        );
-        this.lastCours = new Date(
-            this.cours.filter(c => !c.isRemoved)[
-                this.cours.filter(c => !c.isRemoved).length - 1
-            ]
-        );
+        this.firstCours = this.cours.filter(c => !c.isRemoved)[0];
+        this.lastCours = this.cours.filter(c => !c.isRemoved)[
+            this.cours.filter(c => !c.isRemoved).length - 1
+        ];
         // Date de la journée
         this.date = new Date(this.firstCours.startDate);
     }
