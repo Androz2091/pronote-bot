@@ -48,3 +48,23 @@ Toutes les requêtes envoyées vers Instagram (envoi de messages, messages marqu
 ## ⚠️ Différents ENT
 
 Ce bot ne fonctionne seulement que pour les ENT dont le pattern est le suivant: `votre-college.ecollege.haute-garonne.fr`. En effet, les établissements ne faisant pas partie de la Haute-Garonne ne sont pas supportés. Les lycées du département ne le sont pas non plus. Cela est du au fait que l'interface ENT n'est pas partout la même. Vous pouvez tout de même mettre vos mains dans le cambouis et aller éditer les fichiers du dossier `pronote` pour l'adapter à votre ENT.
+
+## 📁 Installer le bot
+
+Pour installer le bot, ouvrez le terminal et tapez les commandes suivantes :
+
+* `git clone https://github.com/Androz2091/pronote-bot` - Téléchargement des fichiers
+* `npm install -g pm2` - Installation du gestionnaire de process PM2
+* `npm install --production` - Installation des dépendances du bot
+* `pm2 start pronote-bot.js` - Lancement du bot
+
+### ⛭ Fichier de configuration
+
+Pour que le bot fonctionne correctement, vous devez remplir le fichier de configuration. Copiez le fichier `config.sample.json` en un nouveau fichier `config.json`. Puis, éditez le avec les valeurs suivantes :
+
+`username`: Votre pseudo Instagram  
+`password`: Votre mot de passe Instagram  
+`entLoginURL`: L'URL de connexion à votre ENT  
+`entHomePageURL`: La page d'accueil de votre ENT (sera utilisée pour vérifier que le bot n'est pas redirigé vers une page de connexion)  
+`pronoteURL`: L'adresse du serveur Pronote  
+`fullLog`: Le niveau de log que vous souhaitez (je vous conseille de mettre `true` dans un premier temps pour vérifier que tout fonctionne correctement)  
