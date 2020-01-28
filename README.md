@@ -35,7 +35,7 @@ Notifications lors de l'ajout d'une note, avec les fonctionnalités suivantes:
 * notification lors de la réception d'un message ENT
 * autorisation automatique lors d'une demande de message privé sur Instagram
 
-## ⚙️ Comment ça marche ? - 
+## ⚙️ Comment ça marche ?
 
 ### 🎒 Obtention des données depuis Pronote
 
