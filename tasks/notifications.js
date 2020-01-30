@@ -53,5 +53,6 @@ module.exports.infos = {
         // Tous les jours à 6h30
         "00 30 06 * * *"
     ],
-    runOnStart: true
+    runOnStart: true,
+    waitBeforeRunStart: 50000
 };
