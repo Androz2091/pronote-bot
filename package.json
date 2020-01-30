@@ -23,6 +23,7 @@
     "date-and-time": "^0.12.0",
     "instagram-private-api": "^1.37.1",
     "instagram_mqtt": "github:Nerixyz/instagram_mqtt#6f62a16a0b85762be5fd4f421608c9aae7061565",
+    "jimp": "^0.9.3",
     "json-beautify": "^1.1.1",
     "puppeteer": "^2.0.0",
     "require-reload": "^0.2.2",
