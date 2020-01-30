@@ -20,4 +20,4 @@ const optionDefinitions = [
     { name: "no-run-start", alias: "n", type: String, multiple: true },
     { name: "run-tasks", alias: "r", type: String, multiple: true }
 ];
-process.options = commandLineArgs(optionDefinitions);
+process.options = commandLineArgs(optionDefinitions, { partial: true });
