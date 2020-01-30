@@ -14,3 +14,6 @@ package-lock.json
 # Add examples
 !data/example
 !images/example.png
+# Menus
+menus/*
+!menus/example.png
