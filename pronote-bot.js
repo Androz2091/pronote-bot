@@ -12,6 +12,7 @@ const { sep } = require("path");
 const { readFile } = require("fs");
 const { promisify } = require("util");
 const readFileAsync = promisify(readFile);
+const { getMenuNom } = require("./helpers/functions");
 
 if (!existsSync(__dirname + sep + "credentials.json"))
     writeFileSync(__dirname + sep + "credentials.json", [], "utf-8");
@@ -253,6 +254,14 @@ const helpPage = `Voici la liste des commandes disponibles :
                     console.error(e);
                     message.reply("Une erreur est survenue (e=" + e + ")");
                 });
+        } else if(message.content === "!menu") {
+            /* MENU COMMAND */
+            let menuName = getMenuNom();
+            await message.reply("Veuillez patienter...");
+            let img = await readFileAsync(
+                "./menus/" + menuName + ".jpg"
+            );
+            message.replyImage(Buffer.from(img, "binary"));
         } else {
             /* HELP COMMAND */
             await message.reply(
