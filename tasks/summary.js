@@ -4,6 +4,12 @@ const fetchEleve = require("../pronote/fetchEleve");
 const InstaUser = require("../instagram/InstaUser");
 
 module.exports.run = async igClient => {
+
+    // Si le mode vacances est activé
+    if(process.modeVacances){
+        return;
+    }
+
     // Si c'est vendredi ou samedi
     if (new Date().getDay() === 5 || new Date().getDay() === 6) {
         return;

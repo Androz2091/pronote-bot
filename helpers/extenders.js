@@ -26,3 +26,6 @@ const optionDefinitions = [
     { name: "run-tasks", alias: "r", type: String, multiple: true }
 ];
 process.options = commandLineArgs(optionDefinitions, { partial: true });
+
+// Ajout d'une propriété mode vacances
+process.modeVacances = require("../config").modeVacances;

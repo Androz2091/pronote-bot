@@ -255,6 +255,9 @@ const helpPage = `Voici la liste des commandes disponibles :
                     message.reply("Une erreur est survenue (e=" + e + ")");
                 });
         } else if(message.content === "!menu") {
+            if(process.modeVacances){
+                return message.reply("🌴 Le menu n'est pas disponible en mode vacances...");
+            }
             /* MENU COMMAND */
             let menuName = getMenuNom();
             await message.reply("Veuillez patienter...");
