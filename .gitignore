@@ -17,3 +17,5 @@ package-lock.json
 # Menus
 menus/*
 !menus/example.png
+# Tests
+**test**
