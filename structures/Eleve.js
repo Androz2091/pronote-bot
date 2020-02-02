@@ -166,7 +166,7 @@ class Eleve {
         }
 
         // Si c'est un dimanche
-        if (currentDate.getDay() === 7) {
+        if (currentDate.getDay() === 0) {
             // Lundi
             return currentDate.getDate() + 1;
         }
