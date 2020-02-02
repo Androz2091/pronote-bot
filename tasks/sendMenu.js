@@ -4,7 +4,6 @@ const InstaUser = require("../instagram/InstaUser");
 const { getMenuNom } = require("../helpers/functions");
 
 module.exports.run = async igClient => {
-
     let startAt = Date.now();
     logger.log("Starting menu messages.", "info");
 
@@ -14,9 +13,7 @@ module.exports.run = async igClient => {
     credentials = credentials.filter(c => c.notif);
 
     let menuName = getMenuNom();
-    let img = await readFileAsync(
-        "./menus/" + menuName + ".jpg"
-    );
+    let img = await readFileAsync("./menus/" + menuName + ".jpg");
 
     // Pour chaque utilisateur
     await asyncForEach(credentials, async cred => {

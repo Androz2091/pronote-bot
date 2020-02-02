@@ -5,10 +5,7 @@ const InstaUser = require("../instagram/InstaUser");
 
 module.exports.run = async igClient => {
     // Si c'est vendredi ou samedi
-    if (
-        new Date().getDay() === 5 ||
-        new Date().getDay() === 6
-    ) {
+    if (new Date().getDay() === 5 || new Date().getDay() === 6) {
         return;
     }
 
