@@ -8,7 +8,7 @@ module.exports.run = async igClient => {
     if (
         new Date().getDay() === 5 ||
         new Date().getDay() === 6 ||
-        new Date().getDay() === 7
+        new Date().getDay() === 0
     ) {
         return;
     }
