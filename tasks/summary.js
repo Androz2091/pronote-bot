@@ -46,5 +46,5 @@ module.exports.infos = {
         // Tous les jours à 19h15
         "00 15 19 * * *"
     ],
-    runOnStart: true
+    runOnStart: false
 };
