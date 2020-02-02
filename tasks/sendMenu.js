@@ -13,7 +13,9 @@ module.exports.run = async igClient => {
     credentials = credentials.filter(c => c.notif);
 
     let menuName = getMenuNom();
-    let img = await readFileAsync("./menus/" + menuName + ".jpg");
+    let img = await readFileAsync(
+        "./menus/" + menuName.cleanUpSpecialChars() + ".jpg"
+    );
 
     // Pour chaque utilisateur
     await asyncForEach(credentials, async cred => {

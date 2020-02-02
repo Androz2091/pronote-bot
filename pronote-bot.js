@@ -259,7 +259,7 @@ const helpPage = `Voici la liste des commandes disponibles :
             let menuName = getMenuNom();
             await message.reply("Veuillez patienter...");
             let img = await readFileAsync(
-                "./menus/" + menuName + ".jpg"
+                "./menus/" + menuName.cleanUpSpecialChars() + ".jpg"
             );
             message.replyImage(Buffer.from(img, "binary"));
         } else {
