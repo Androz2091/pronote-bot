@@ -58,7 +58,7 @@ module.exports = async ({ username, password }) => {
     let fetchMonday =
         new Date().getDay() === 5 ||
         new Date().getDay() === 6 ||
-        new Date().getDay() === 7;
+        new Date().getDay() === 0;
     return new Promise(async resolve => {
         let browser = await puppeteer.launch({ args: ["--no-sandbox"] });
         let page = await browser.newPage();
@@ -185,7 +185,7 @@ module.exports = async ({ username, password }) => {
                     "Fetching monday... (session=" + username + ")",
                     "log"
                 );
-                let interval = setInterval(clickWeek, 1500);
+                let interval = setInterval(clickWeek, 2000);
                 async function clickWeek() {
                     logger.log(
                         "Evaluating page... (session=" + username + ")",
