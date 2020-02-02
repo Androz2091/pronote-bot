@@ -52,9 +52,8 @@ const getMois = date => {
 
 const getMenuNom = () => {
     let dateWeek = new Date();
-    // Si c'est vendredi, samedi ou dimanche
+    // Si c'est samedi ou dimanche
     if (
-        new Date().getDay() === 5 ||
         new Date().getDay() === 6 ||
         new Date().getDay() === 0
     ) {
