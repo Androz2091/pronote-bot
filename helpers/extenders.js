@@ -14,6 +14,11 @@ String.prototype.decodeHTML = function() {
     });
 };
 
+// Suppression des accents
+String.prototype.cleanUpSpecialChars = function() {
+    return this.replace(/é|è|ê/g, "e");
+};
+
 // Ajout d'une propriété process.options
 const commandLineArgs = require("command-line-args");
 const optionDefinitions = [
