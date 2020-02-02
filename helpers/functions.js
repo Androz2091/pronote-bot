@@ -62,7 +62,7 @@ const getMenuNom = () => {
             : getLundi(dateWeek).getDate()
     }-au-${
         String(getVendredi(dateWeek).getDate()).length === 1
-            ? `0${getVendredi(dateWeek).getDate()}}`
+            ? `0${getVendredi(dateWeek).getDate()}`
             : getVendredi(dateWeek).getDate()
     }-${getMois(dateWeek)}-${dateWeek.getFullYear()}`;
 };
