@@ -2,7 +2,6 @@ const logger = require("../helpers/logger");
 const { asyncForEach, delay } = require("../helpers/functions");
 
 module.exports.run = async igClient => {
-    console.log("cjec");
     const followersFeed = igClient.feed.accountFollowers(igClient.authPk);
     const followersFeedResponse = await followersFeed.items();
     const followers = followersFeedResponse.map(f => f.username);
