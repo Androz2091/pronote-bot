@@ -4,11 +4,10 @@ const fetchEleve = require("../pronote/fetchEleve");
 const InstaUser = require("../instagram/InstaUser");
 
 module.exports.run = async igClient => {
-    // Si c'est vendredi, samedi ou dimanche
+    // Si c'est vendredi ou samedi
     if (
         new Date().getDay() === 5 ||
-        new Date().getDay() === 6 ||
-        new Date().getDay() === 0
+        new Date().getDay() === 6
     ) {
         return;
     }
@@ -47,5 +46,5 @@ module.exports.infos = {
         // Tous les jours à 19h15
         "00 15 19 * * *"
     ],
-    runOnStart: false
+    runOnStart: true
 };
