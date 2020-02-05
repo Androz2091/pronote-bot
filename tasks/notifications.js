@@ -18,7 +18,7 @@ module.exports.run = async igClient => {
         logger.log(`Cache check for ${cred.username} started.`, "info");
         let student = await fetchEleve(cred).catch(() => {});
         if (!student) return;
-        let diffData = student.getDifferences();
+        let diffData = student.getDifferences(true);
         logger.log(`Cache retrieved. (session=${cred.username})`);
         if (diffData.oldGenerale !== diffData.newGenerale) {
             logger.log(`Differences detected. (session=${cred.username})`);
