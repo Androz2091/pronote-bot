@@ -61,6 +61,8 @@ class Eleve {
             writeFileSync(`./data/${this.name}/cache.json`, "{}", "utf-8");
         if (!existsSync(`./data/${this.name}/history.json`))
             writeFileSync(`./data/${this.name}/history.json`, "[]", "utf-8");
+        if (!existsSync(`./data/${this.name}/lastMessage.json`))
+            writeFileSync(`./data/${this.name}/lastMessage.json`, "[]", "utf-8");
         // Cache pour l'élève
         this.cache = require(`../data/${this.name}/cache.json`);
         // Historique des moyennes
