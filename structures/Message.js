@@ -2,6 +2,7 @@ const cheerio = require("cheerio");
 
 const { entViewMessageURL } = require("../config");
 const { writeFileSync, existsSync, mkdirSync, readFileSync } = require("fs");
+const { shorturl } = require("../helpers/functions");
 
 const dayNames = [
     "lundi",
@@ -73,11 +74,12 @@ class Message {
         );
         this.endOfLink = this.pageLastMessage.children[7].children[1].children[1].attribs.href;
         this.fullLink = `${entViewMessageURL}${this.endOfLink}`;
-        this.mustBeSent = date !== this.formattedDate && !this.isRead;
+        this.mustBeSent = date !== this.formattedDate && !this.isRead && (this.date.getDate() > (new Date().getDate()-2));
     }
 
-    get formatted() {
-        return `📮 Nouveau mail\n\nℹ️ Objet: ${this.subject}\n\n👤 Auteur: ${this.formattedAuthor}\n\n🔗 Voir le message:\n\n${this.fullLink}`;
+    async format() {
+        let minifiedLink = await shorturl(this.fullLink);
+        return `✉️ Nouveau mail ENT\n\nℹ️ ${this.subject}\n👤 Par ${this.formattedAuthor}\n🔗 Lien: ${minifiedLink}`;
     }
 
     saveIt() {
