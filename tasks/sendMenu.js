@@ -4,9 +4,8 @@ const InstaUser = require("../instagram/InstaUser");
 const { getMenuNom } = require("../helpers/functions");
 
 module.exports.run = async igClient => {
-
     // Si le mode vacances est activé
-    if(process.modeVacances){
+    if (process.modeVacances) {
         return;
     }
 

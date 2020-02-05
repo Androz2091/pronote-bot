@@ -4,9 +4,8 @@ const fetchEleve = require("../pronote/fetchEleve");
 const InstaUser = require("../instagram/InstaUser");
 
 module.exports.run = async igClient => {
-
     // Si le mode vacances est activé
-    if(process.modeVacances){
+    if (process.modeVacances) {
         return;
     }
 

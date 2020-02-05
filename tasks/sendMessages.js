@@ -16,16 +16,17 @@ module.exports.run = async igClient => {
     await asyncForEach(credentials, async cred => {
         let userStartAt = Date.now();
         logger.log(`Messages check for ${cred.username} started.`, "info");
-        let message = await fetchMessage(cred.username, cred.password).catch(() => {});
+        let message = await fetchMessage(
+            cred.username,
+            cred.password
+        ).catch(() => {});
         logger.log(`Messages retrieved. (session=${cred.username})`);
         if (message.mustBeSent) {
             logger.log(`New message detected. (session=${cred.username})`);
             let user = new InstaUser(cred.insta, igClient);
             user.send(message.formatted);
         } else {
-            logger.log(
-                `No new messages detected. (session=${cred.username})`
-            );
+            logger.log(`No new messages detected. (session=${cred.username})`);
         }
         message.saveIt();
         logger.log(

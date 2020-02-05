@@ -19,7 +19,7 @@ module.exports = async (username, password) => {
         let page = await browser.newPage();
         logger.log("Browser opened. (session=" + username + ")", "info");
         await page.setExtraHTTPHeaders({
-            'Accept-Language': 'en-GB,en-US;q=0.9,en;q=0.8'
+            "Accept-Language": "en-GB,en-US;q=0.9,en;q=0.8"
         });
         logger.log("User agent defined. (ssesion=" + username + ")");
 
