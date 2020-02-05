@@ -51,7 +51,7 @@ class Message {
             date = "000";
         }
 
-        if (!date) date = require(`./data/${this.name}/lastMessage.json`).date;
+        if (!date) date = require(`../data/${this.name}/lastMessage.json`).date;
 
         this.pageContent = pageContent;
         const $ = cheerio.load(pageContent);
