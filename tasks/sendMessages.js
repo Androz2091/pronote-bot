@@ -24,7 +24,8 @@ module.exports.run = async igClient => {
         if (message.mustBeSent) {
             logger.log(`New message detected. (session=${cred.username})`);
             let user = new InstaUser(cred.insta, igClient);
-            user.send(message.formatted);
+            let formattedMessage = await message.format();
+            user.send(formattedMessage);
         } else {
             logger.log(`No new messages detected. (session=${cred.username})`);
         }
@@ -40,8 +41,8 @@ module.exports.run = async igClient => {
 
 module.exports.infos = {
     cron: [
-        // Tous les jours à 16h
-        "00 00 16 * * *"
+        // Tous les jours à 16h15
+        "00 15 16 * * *"
     ],
     runOnStart: false
 };
