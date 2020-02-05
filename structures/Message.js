@@ -42,13 +42,14 @@ class Message {
             writeFileSync(`./data/${this.name}/cache.json`, "{}", "utf-8");
         if (!existsSync(`./data/${this.name}/history.json`))
             writeFileSync(`./data/${this.name}/history.json`, "[]", "utf-8");
-        if (!existsSync(`./data/${this.name}/lastMessage.json`))
+        if (!existsSync(`./data/${this.name}/lastMessage.json`)){
             writeFileSync(
                 `./data/${this.name}/lastMessage.json`,
                 `{ "date": null }`,
                 "utf-8"
             );
-        date = "000";
+            date = "000";
+        }
 
         if (!date) date = require(`./data/${this.name}/lastMessage.json`).date;
 
