@@ -1,3 +1,5 @@
+const isgd = require("isgd");
+
 const matieresFormatees = require("../matieres.json");
 const formatMatiere = (nom, reverse) => {
     let data = matieresFormatees.find(d => (reverse ? d[1] : d[0]) === nom);
@@ -67,9 +69,16 @@ const getMenuNom = () => {
     }-${getMois(dateWeek)}-${dateWeek.getFullYear()}`;
 };
 
+const shorturl = (url) => {
+    return new Promise((resolve) => {
+        isgd.shorten(url, (res) => resolve(res));
+    });
+};
+
 module.exports = {
     formatMatiere,
     asyncForEach,
     delay,
-    getMenuNom
+    getMenuNom,
+    shorturl
 };
