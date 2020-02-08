@@ -7,7 +7,7 @@ module.exports = class InstaMessage {
         this.id = data.item_id;
         this.thread = data.thread_id;
         this.date = data.timestamp;
-        this.content = data.text;
+        this.content = (data.text || (data.link ? data.link.text : null));
         this.ig = ig;
     }
 
