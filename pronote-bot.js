@@ -2,7 +2,7 @@ require("./helpers/extenders");
 
 const getClient = require("./instagram/getClient");
 const fetchEleve = require("./pronote/fetchEleve");
-const genConnectedPage = require("./pronote/genConnectedPage");
+const checkCred = require("./pronote/checkCred");
 const fs = require("fs");
 const logger = require("./helpers/logger");
 const beautify = require("json-beautify");
@@ -13,6 +13,8 @@ const { readFile } = require("fs");
 const { promisify } = require("util");
 const readFileAsync = promisify(readFile);
 const { getMenuNom } = require("./helpers/functions");
+const InstaMessage = require("./instagram/InstaMessage");
+const config = require("./config");
 
 if (!existsSync(__dirname + sep + "credentials.json"))
     writeFileSync(__dirname + sep + "credentials.json", [], "utf-8");
@@ -44,11 +46,23 @@ const helpPage = `Voici la liste des commandes disponibles :
 
     setTimeout(() => {
         logger.log("Client is listening.", "info");
-    }, 10000);
+    }, 2000);
 
-    ig.eventsHandler.on("message", async message => {
-        // Il peut y avoir de fausses notifications si le bot est démarré depuis moins de 10-20 secondes
-        if (Date.now() - igWakeUp < 10000) {
+    let currentUserID = null;
+    ig.realtime.on('message', async msgRaw => {
+
+        if(msgRaw.message.op !== "add") return;
+
+        // Il peut y avoir de fausses notifications si le bot est démarré depuis moins de 2 secondes
+        if (Date.now() - igWakeUp < 2000) {
+            return;
+        }
+
+        let message = new InstaMessage(msgRaw.message, ig);
+        if(message.author.id === currentUserID) return;
+        await message.author.fetchInfo();
+        if(message.author.username === config.username){
+            currentUserID = message.author.id;
             return;
         }
 
@@ -76,54 +90,48 @@ const helpPage = `Voici la liste des commandes disponibles :
                 loginStates[i].password = message.content;
                 message.reply("Vérification de vos identifiants...");
                 // Check if the credentials are correct
-                genConnectedPage(
+                let isValid = await checkCred(
                     loginStates[i].username,
-                    loginStates[i].password,
-                    true
-                )
-                    .then(async page => {
-                        let avatar = await page.evaluate(() => {
-                            return $("body").find("img")[1].src;
-                        });
-                        page.browser().close();
-                        // If the credentials are correct
-                        await message.reply(
-                            "Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion."
-                        );
-                        await message.reply(
-                            helpPage.replace(
-                                "{{notifStatus}}",
-                                "🔔Notification activées"
-                            )
-                        );
-                        credentials.push({
-                            username: loginStates[i].username,
-                            password: loginStates[i].password,
-                            insta: message.author.username,
-                            notif: true,
-                            avatar
-                        });
-                        fs.writeFileSync(
-                            "./credentials.json",
-                            beautify(credentials, null, 2, 100),
-                            "utf-8"
-                        );
-                        reload("./credentials.json");
-                        // Remove state
-                        loginStates = loginStates.filter(
-                            l => l.insta !== message.author.username
-                        );
-                    })
-                    .catch(async () => {
-                        // Remove state
-                        loginStates = loginStates.filter(
-                            l => l.insta !== message.author.username
-                        );
-                        await message.reply(
-                            "Hmm... on dirait que vos identifiants sont invalides."
-                        );
-                        return message.reply("Tapez !login pour réessayer!");
+                    loginStates[i].password
+                );
+                if(isValid){
+                    // If the credentials are correct
+                    await message.reply(
+                        "Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion."
+                    );
+                    await message.reply(
+                        helpPage.replace(
+                            "{{notifStatus}}",
+                            "🔔Notification activées"
+                        )
+                    );
+                    credentials.push({
+                        username: loginStates[i].username,
+                        password: loginStates[i].password,
+                        insta: message.author.username,
+                        notif: true,
+                        avatar
                     });
+                    fs.writeFileSync(
+                        "./credentials.json",
+                        beautify(credentials, null, 2, 100),
+                        "utf-8"
+                    );
+                    reload("./credentials.json");
+                    // Remove state
+                    loginStates = loginStates.filter(
+                        l => l.insta !== message.author.username
+                    );
+                } else {
+                    // Remove state
+                    loginStates = loginStates.filter(
+                        l => l.insta !== message.author.username
+                    );
+                    await message.reply(
+                        "Hmm... on dirait que vos identifiants sont invalides."
+                    );
+                    return message.reply("Tapez !login pour réessayer!");
+                }
             }
         } else if (!message.author.logged && message.content !== "!login") {
             /* LOGIN MESSAGE */
