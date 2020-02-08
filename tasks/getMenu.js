@@ -6,6 +6,7 @@ const { getMenuNom } = require("../helpers/functions");
 const logger = require("../helpers/logger");
 
 module.exports.run = async () => {
+    if(process.modeVacances) return;
     if (await existsAsync(`./menus/${getMenuNom()}.jpg`)) {
         logger.log("Menu already fetched", "info");
     } else {

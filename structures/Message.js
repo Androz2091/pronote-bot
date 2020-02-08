@@ -42,7 +42,7 @@ class Message {
             writeFileSync(`./data/${this.name}/cache.json`, "{}", "utf-8");
         if (!existsSync(`./data/${this.name}/history.json`))
             writeFileSync(`./data/${this.name}/history.json`, "[]", "utf-8");
-        if (!existsSync(`./data/${this.name}/lastMessage.json`)){
+        if (!existsSync(`./data/${this.name}/lastMessage.json`)) {
             writeFileSync(
                 `./data/${this.name}/lastMessage.json`,
                 `{ "date": null }`,
@@ -75,7 +75,10 @@ class Message {
         );
         this.endOfLink = this.pageLastMessage.children[7].children[1].children[1].attribs.href;
         this.fullLink = `${entViewMessageURL}${this.endOfLink}`;
-        this.mustBeSent = date !== this.formattedDate && !this.isRead && (this.date.getDate() > (new Date().getDate()-2));
+        this.mustBeSent =
+            date !== this.formattedDate &&
+            !this.isRead &&
+            this.date.getDate() > new Date().getDate() - 2;
     }
 
     async format() {
