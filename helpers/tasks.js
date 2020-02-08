@@ -27,17 +27,6 @@ module.exports = async igClient => {
                 "Europe/Paris"
             );
         });
-        if (task.infos.fbnsEvents) {
-            task.infos.fbnsEvents.forEach(e => {
-                igClient.eventsHandler.on(e, () => {
-                    logger.log(
-                        "Task " + task.name + " started (fbns).",
-                        "info"
-                    );
-                    task.run(igClient);
-                });
-            });
-        }
         tasks.push(task);
     });
     logger.log(`${tasksFiles.length} tasks loaded.`, "info");
