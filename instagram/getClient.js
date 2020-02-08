@@ -1,80 +1,61 @@
-const { withFbns } = require("instagram_mqtt");
+const { IgApiClientRealtime, withRealtime } = require("instagram_mqtt");
+const {
+    GraphQLSubscriptions
+} = require("instagram_mqtt/dist/realtime/subscriptions");
 const { IgApiClient } = require("instagram-private-api");
-const { promisify } = require("util");
-const { writeFile, readFile, exists } = require("fs");
-
-const InstaMessage = require("./InstaMessage");
-
-const writeFileAsync = promisify(writeFile);
-const readFileAsync = promisify(readFile);
-const existsAsync = promisify(exists);
-
-const { EventEmitter } = require("events");
-const { sep } = require("path");
+const {
+    SkywalkerSubscriptions
+} = require("instagram_mqtt/dist/realtime/subscriptions");
 const { username, password } = require("../config.json");
 
 module.exports = async () => {
     return new Promise(async resolve => {
-        const ig = withFbns(new IgApiClient());
+        // this extends the IgApiClient with realtime features
+        const ig = withRealtime(new IgApiClient());
+        // normal login
         ig.state.generateDevice(username);
+        await ig.account.login(username, password);
+        // now `ig` is a client with a valid session
 
-        ig.eventsHandler = new EventEmitter();
+        // an example on how to subscribe to live comments
+        const subToLiveComments = broadcastId =>
+            // you can add other GraphQL subs using .subscribe
+            ig.realtime.graphQlSubscribe(
+                GraphQLSubscriptions.getLiveRealtimeCommentsSubscription(
+                    broadcastId
+                )
+            );
 
-        // this will set the auth and the cookies for instagram
-        await readState(ig);
-
-        // this logs the client in
-        await loginToInstagram(ig);
-
-        // you received a notification
-        ig.fbns.push$.subscribe((data) => {
-            if(data.collapseKey === "direct_v2_message"){
-                ig.eventsHandler.emit("message", new InstaMessage(data, ig));
-            } else if(data.collapseKey === "follower_follow" || data.collapseKey === "new_follower"){
-                ig.eventsHandler.emit("follow");
-            }
+        // whenever the client has a fatal error
+        ig.realtime.on("error", console.error);
+        ig.realtime.on("close", () => console.error("RealtimeClient closed"));
+        // connect
+        // this will resolve once all initial subscriptions have been sent
+        await ig.realtime.connect({
+            // optional
+            graphQlSubs: [],
+            // optional
+            skywalkerSubs: [
+                SkywalkerSubscriptions.directSub(ig.state.cookieUserId),
+                SkywalkerSubscriptions.liveSub(ig.state.cookieUserId)
+            ],
+            irisData: await ig.feed.directInbox().request(),
+            connectOverrides: {}
         });
-        // the client received auth data
-        // the listener has to be added before connecting
-        ig.fbns.auth$.subscribe(async (auth) => {
-            ig.authPk = auth.pk;
-            //saves the auth
-            await saveState(ig);
+        ig.realtime.direct.sendForegroundState({
+            inForegroundApp: true,
+            inForegroundDevice: true,
+            keepAliveTimeout: 60
         });
-        // 'error' is emitted whenever the client experiences a fatal error
-        ig.fbns.error$.subscribe(logEvent('error'));
-        // 'warning' is emitted whenever the client errors but the connection isn't affected
-        ig.fbns.warning$.subscribe(logEvent('warning'));
-
-        // this sends the connect packet to the server and starts the connection
-        // the promise will resolve once the client is fully connected (once /push/register/ is received)
-        await ig.fbns.connect();
         resolve(ig);
     });
 };
 
-async function saveState(ig) {
-    return writeFileAsync(__dirname + sep + "state.json",
-    await ig.exportState(),
-    { encoding: "utf8" });
-}
-
-async function readState(ig) {
-    if (!(await existsAsync(__dirname + sep + "state.json")))
-        return;
-    await ig.importState(await readFileAsync(__dirname + sep + "state.json", {encoding: 'utf8'}));
-}
-
-async function loginToInstagram(ig) {
-    ig.request.end$.subscribe(() => saveState(ig));
-    await ig.account.login(username, password);
-}
-
 /**
  * A wrapper function to log to the console
  * @param name
- * @returns {(data) => void}
+ * @returns {(data) =void}
  */
 function logEvent(name) {
-    return (data) => console.log(name, data);
+    return data => console.log(name, data);
 }
