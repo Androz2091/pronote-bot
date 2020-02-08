@@ -28,25 +28,6 @@ for (let i = 0; i < nombreSemaines; i++) {
     });
 }
 
-Date.prototype.getWeekNumber = function() {
-    var d = new Date(
-        Date.UTC(this.getFullYear(), this.getMonth(), this.getDate())
-    );
-    var dayNum = d.getUTCDay() || 7;
-    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
-    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
-    return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
-};
-
-const IsJsonString = str => {
-    try {
-        JSON.parse(str);
-        return JSON.parse(str);
-    } catch (e) {
-        return false;
-    }
-};
-
 module.exports = async ({ username, password }) => {
     // Calcul du numéro de semaine suivant
     let currentNumeroSemaine =
@@ -127,8 +108,8 @@ module.exports = async ({ username, password }) => {
         logger.log("Detecting responses. (session=" + username + ")");
         page.on("response", async res => {
             let resText = await res.text();
-            if (IsJsonString(resText)) {
-                let value = IsJsonString(resText);
+            if (resText.isJson()) {
+                let value = resText.isJson();
                 if (value.nom === "DernieresNotes") {
                     logger.log(
                         "First response retrieved. (session=" + username + ")"
