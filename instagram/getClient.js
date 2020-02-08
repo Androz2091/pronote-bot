@@ -1,8 +1,7 @@
-const { IgApiClientExt, IgApiClientFbns, withFbns } = require("instagram_mqtt");
+const { withFbns } = require("instagram_mqtt");
 const { IgApiClient } = require("instagram-private-api");
 const { promisify } = require("util");
 const { writeFile, readFile, exists } = require("fs");
-const { sep } = require("path");
 
 const InstaMessage = require("./InstaMessage");
 
@@ -10,57 +9,72 @@ const writeFileAsync = promisify(writeFile);
 const readFileAsync = promisify(readFile);
 const existsAsync = promisify(exists);
 
+const { EventEmitter } = require("events");
+const { sep } = require("path");
 const { username, password } = require("../config.json");
 
-module.exports = () => {
+module.exports = async () => {
     return new Promise(async resolve => {
-        // New IG Client
         const ig = withFbns(new IgApiClient());
         ig.state.generateDevice(username);
 
-        // If there's already auth informations
+        ig.eventsHandler = new EventEmitter();
+
+        // this will set the auth and the cookies for instagram
         await readState(ig);
-        // Log in Instagram
-        let auth = await loginToInstagram(ig);
-        ig.authPk = auth.pk;
 
-        // When a message is received, emit another event with the formatted message
-        ig.fbns.on("direct_v2_message", data => {
-            ig.fbns.emit("message", new InstaMessage(data, ig));
+        // this logs the client in
+        await loginToInstagram(ig);
+
+        // you received a notification
+        ig.fbns.push$.subscribe((data) => {
+            if(data.collapseKey === "direct_v2_message"){
+                ig.eventsHandler.emit("message", new InstaMessage(data, ig));
+            } else if(data.collapseKey === "follower_follow" || data.collapseKey === "new_follower"){
+                ig.eventsHandler.emit("follow");
+            }
         });
-
-        // When the auth informations are received, save them
-        ig.fbns.on("auth", async () => {
+        // the client received auth data
+        // the listener has to be added before connecting
+        ig.fbns.auth$.subscribe(async (auth) => {
+            ig.authPk = auth.pk;
+            //saves the auth
             await saveState(ig);
         });
+        // 'error' is emitted whenever the client experiences a fatal error
+        ig.fbns.error$.subscribe(logEvent('error'));
+        // 'warning' is emitted whenever the client errors but the connection isn't affected
+        ig.fbns.warning$.subscribe(logEvent('warning'));
 
-        // Connect FBNS
+        // this sends the connect packet to the server and starts the connection
+        // the promise will resolve once the client is fully connected (once /push/register/ is received)
         await ig.fbns.connect();
-
-        // Return IG Client
         resolve(ig);
     });
 };
 
 async function saveState(ig) {
-    return writeFileAsync(
-        __dirname + sep + "state.json",
-        await ig.exportState(),
-        { encoding: "utf8" }
-    );
+    return writeFileAsync(__dirname + sep + "state.json",
+    await ig.exportState(),
+    { encoding: "utf8" });
 }
 
 async function readState(ig) {
-    if (!(await existsAsync(__dirname + sep + "state.json"))) return;
-    await ig.importState(
-        await readFileAsync(__dirname + sep + "state.json", {
-            encoding: "utf8"
-        })
-    );
+    if (!(await existsAsync(__dirname + sep + "state.json")))
+        return;
+    await ig.importState(await readFileAsync(__dirname + sep + "state.json", {encoding: 'utf8'}));
 }
 
 async function loginToInstagram(ig) {
     ig.request.end$.subscribe(() => saveState(ig));
-    let auth = await ig.account.login(username, password);
-    return auth;
+    await ig.account.login(username, password);
+}
+
+/**
+ * A wrapper function to log to the console
+ * @param name
+ * @returns {(data) => void}
+ */
+function logEvent(name) {
+    return (data) => console.log(name, data);
 }

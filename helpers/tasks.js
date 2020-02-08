@@ -29,7 +29,7 @@ module.exports = async igClient => {
         });
         if (task.infos.fbnsEvents) {
             task.infos.fbnsEvents.forEach(e => {
-                igClient.fbns.on(e, () => {
+                igClient.eventsHandler.on(e, () => {
                     logger.log(
                         "Task " + task.name + " started (fbns).",
                         "info"

@@ -46,7 +46,7 @@ const helpPage = `Voici la liste des commandes disponibles :
         logger.log("Client is listening.", "info");
     }, 10000);
 
-    ig.fbns.on("message", async message => {
+    ig.eventsHandler.on("message", async message => {
         // Il peut y avoir de fausses notifications si le bot est démarré depuis moins de 10-20 secondes
         if (Date.now() - igWakeUp < 10000) {
             return;
@@ -231,6 +231,9 @@ const helpPage = `Voici la liste des commandes disponibles :
                 "Vous ne recevrez plus de notification lorsqu'une note est ajoutée sur Pronote... Tapez !notif pour réactiver cette option."
             );
         } else if (message.content === "!recap") {
+            if(process.modeVacances){
+                return message.reply("🌴 Le recap n'est pas disponible en mode vacances...");
+            }
             /* RECAP COMMAND */
             if (cooldown) {
                 return message.reply(

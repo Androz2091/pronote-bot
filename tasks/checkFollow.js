@@ -48,5 +48,5 @@ module.exports.run = async igClient => {
 module.exports.infos = {
     cron: ["0 */6 * * *"],
     runOnStart: true,
-    fbnsEvents: ["new_follower", "follower_follow", "follow_request_approved"]
+    fbnsEvents: ["follow"]
 };
