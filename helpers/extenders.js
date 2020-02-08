@@ -19,6 +19,27 @@ String.prototype.cleanUpSpecialChars = function() {
     return this.replace(/é|è|ê/g, "e");
 };
 
+// Ajout d'une méthode pour obtenir le numéro de la semaine
+Date.prototype.getWeekNumber = function() {
+    var d = new Date(
+        Date.UTC(this.getFullYear(), this.getMonth(), this.getDate())
+    );
+    var dayNum = d.getUTCDay() || 7;
+    d.setUTCDate(d.getUTCDate() + 4 - dayNum);
+    var yearStart = new Date(Date.UTC(d.getUTCFullYear(), 0, 1));
+    return Math.ceil(((d - yearStart) / 86400000 + 1) / 7);
+};
+
+// Pour savoir si une chaine de caractère est du json
+String.prototype.isJson = function() {
+    try {
+        JSON.parse(this);
+        return JSON.parse(this);
+    } catch (e) {
+        return false;
+    }
+};
+
 // Ajout d'une propriété process.options
 const commandLineArgs = require("command-line-args");
 const optionDefinitions = [
