@@ -83,7 +83,10 @@ class Message {
 
     async format() {
         let minifiedLink = await shorturl(this.fullLink);
-        return `✉️ Nouveau mail ENT\n\nℹ️ ${this.subject}\n👤 Par ${this.formattedAuthor}\n🔗 Lien: ${minifiedLink}`;
+        return {
+            message: `✉️ Nouveau mail ENT\n\nℹ️ ${this.subject}\n👤 Par ${this.formattedAuthor}\n🔗 Lien ci dessous`,
+            link: minifiedLink
+        };
     }
 
     saveIt() {

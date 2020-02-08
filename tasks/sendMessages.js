@@ -23,9 +23,10 @@ module.exports.run = async igClient => {
         logger.log(`Messages retrieved. (session=${cred.username})`);
         if (message.mustBeSent) {
             logger.log(`New message detected. (session=${cred.username})`);
-            let user = new InstaUser(cred.insta, igClient);
-            let formattedMessage = await message.format();
-            user.send(formattedMessage);
+            let userID = await igClient.user.getIdByUsername(cred.insta);;
+            let user = new InstaUser(userID, igClient);
+            let { message: msg, link } = await message.format();
+            user.sendLink(msg, link);
         } else {
             logger.log(`No new messages detected. (session=${cred.username})`);
         }

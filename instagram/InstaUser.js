@@ -24,6 +24,11 @@ module.exports = class InstaUser {
         return true;
     }
 
+    async sendLink(message, link){
+        await this.thread.broadcastLink(message, [link]);
+        return true;
+    }
+
     // Whether the user is logged
     get logged() {
         return Boolean(
