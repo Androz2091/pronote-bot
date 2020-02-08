@@ -2,12 +2,12 @@ const InstaUser = require("./InstaUser");
 
 module.exports = class InstaMessage {
     constructor(data, ig) {
-        this.author = new InstaUser(data.message.split(":")[0], ig);
-        this.content = data.message
-            .split(":")
-            .slice(1, data.message.split(":").length)
-            .join(":")
-            .trim();
+        this.author = new InstaUser(data.user_id, ig);
+        this.authorID = data.user_id;
+        this.id = data.item_id;
+        this.thread = data.thread_id;
+        this.date = data.timestamp;
+        this.content = data.text;
         this.ig = ig;
     }
 
@@ -20,22 +20,7 @@ module.exports = class InstaMessage {
     }
 
     async markAsSeen() {
-        this.author.fetchID();
-        this.ig.feed
-            .directInbox()
-            .items()
-            .then(items => {
-                let thread = items.find(
-                    i =>
-                        i.users.length === 1 && i.users[0].pk === this.author.id
-                );
-                let item = thread.items.sort(
-                    (a, b) => parseInt(b.timestamp) - parseInt(a.timestamp)
-                )[0];
-                this.ig.directThread.markItemSeen(
-                    thread.thread_id,
-                    item.item_id
-                );
-            });
+        this.ig.directThread.markItemSeen(this.thread, this.id);
+        console.log("marked");
     }
 };
