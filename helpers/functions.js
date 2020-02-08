@@ -69,9 +69,9 @@ const getMenuNom = () => {
     }-${getMois(dateWeek)}-${dateWeek.getFullYear()}`;
 };
 
-const shorturl = (url) => {
-    return new Promise((resolve) => {
-        isgd.shorten(url, (res) => resolve(res));
+const shorturl = url => {
+    return new Promise(resolve => {
+        isgd.shorten(url, res => resolve(res));
     });
 };
 
