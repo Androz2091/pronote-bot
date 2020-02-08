@@ -178,7 +178,7 @@ const helpPage = `Voici la liste des commandes disponibles :
                 .then(student => {
                     message.reply(
                         "Moyennes:\n\nNormale: " +
-                            (student.moyenne || "No data") +
+                            (student.moyenne || "Aucune note") +
                             "\nPluriannuelle: " +
                             student.moyennePluri
                     );
