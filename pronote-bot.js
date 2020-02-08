@@ -68,7 +68,7 @@ const helpPage = `Voici la liste des commandes disponibles :
 
         message.markAsSeen();
 
-        let credentials = require("./credentials");
+        let credentials = require("./credentials.json");
         let cooldown =
             commandsWait[message.author.username] &&
             Date.now() - commandsWait[message.author.username] < 20000;
@@ -109,8 +109,7 @@ const helpPage = `Voici la liste des commandes disponibles :
                         username: loginStates[i].username,
                         password: loginStates[i].password,
                         insta: message.author.username,
-                        notif: true,
-                        avatar
+                        notif: true
                     });
                     fs.writeFileSync(
                         "./credentials.json",
