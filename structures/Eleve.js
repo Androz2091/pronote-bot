@@ -18,18 +18,18 @@ class Eleve {
      * @param {String} pdpURL La photo de profil de l'élève
      */
     constructor(listeNotes, pluriNotes, emploisDuTemps, username, pdpURL) {
+        // Formate les matières correctement
+        this.matieresDernieresNotes = listeNotes.donneesSec.donnees.listeServices.V.map(
+            matiere => {
+                return {
+                    // nom de la matière
+                    nom: formatMatiere(matiere.L),
+                    // moyenne de l'élève
+                    moyenne: matiere.moyEleve.V
+                };
+            }
+        );
         if(!process.modeVacances){
-            // Formate les matières correctement
-            this.matieresDernieresNotes = listeNotes.donneesSec.donnees.listeServices.V.map(
-                matiere => {
-                    return {
-                        // nom de la matière
-                        nom: formatMatiere(matiere.L),
-                        // moyenne de l'élève
-                        moyenne: matiere.moyEleve.V
-                    };
-                }
-            );
             this.journees = [];
             for (let emploiDuTemps of emploisDuTemps) {
                 let dates = [];
