@@ -9,6 +9,8 @@
 
     "fullLog": true,
 
-    "modeVacances": false
+    "modeVacances": false,
+
+    "coronaMode": true
 
 }

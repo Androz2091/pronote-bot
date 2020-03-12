@@ -50,3 +50,4 @@ process.options = commandLineArgs(optionDefinitions, { partial: true });
 
 // Ajout d'une propriété mode vacances
 process.modeVacances = require("../config").modeVacances;
+process.coronaMode = require("../config").coronaMode;

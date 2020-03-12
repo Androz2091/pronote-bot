@@ -240,6 +240,8 @@ const helpPage = `Voici la liste des commandes disponibles :
         } else if (message.content === "!recap") {
             if(process.modeVacances){
                 return message.reply("🌴 Le recap n'est pas disponible en mode vacances...");
+            } else if (process.coronaMode){
+                return message.reply("⚠️ Suite à une décision du gouvernement français, les cours ne s'organisent plus de la même façon à compter du lundi 16 mars 2020.");
             }
             /* RECAP COMMAND */
             if (cooldown) {
@@ -267,6 +269,8 @@ const helpPage = `Voici la liste des commandes disponibles :
         } else if(message.content === "!menu") {
             if(process.modeVacances){
                 return message.reply("🌴 Le menu n'est pas disponible en mode vacances...");
+            } else if (process.coronaMode){
+                return message.reply("⚠️ Suite à une décision du gouvernement français, les cours ne s'organisent plus de la même façon à compter du lundi 16 mars 2020.");
             }
             /* MENU COMMAND */
             let menuName = getMenuNom();
