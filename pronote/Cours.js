@@ -3,10 +3,7 @@ require("date-and-time/locale/fr");
 date.locale("fr");
 const { formatMatiere } = require("../helpers/functions");
 
-/**
- * Représente un cours
- */
-class Cours {
+module.exports = class Cours {
     constructor(coursData) {
         // Le nom de la matière
         this.matiere = formatMatiere(
@@ -129,5 +126,3 @@ class Cours {
         return false;
     }
 }
-
-module.exports = Cours;

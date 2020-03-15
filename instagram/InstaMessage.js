@@ -1,8 +1,9 @@
 const InstaUser = require("./InstaUser");
 
 module.exports = class InstaMessage {
-    constructor(data, ig) {
-        this.author = new InstaUser(data.user_id, ig);
+    constructor(bot, data, ig) {
+        this.bot = bot;
+        this.author = new InstaUser(bot, data.user_id, ig);
         this.authorID = data.user_id;
         this.id = data.item_id;
         this.thread = data.thread_id;
@@ -21,6 +22,5 @@ module.exports = class InstaMessage {
 
     async markAsSeen() {
         this.ig.directThread.markItemSeen(this.thread, this.id);
-        console.log("marked");
     }
 };

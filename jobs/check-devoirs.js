@@ -1,0 +1,34 @@
+const Job = require("../structures/Job");
+const InstaUser = require("../instagram/InstaUser");
+const { asyncForEach, delay } = require("../helpers/functions");
+
+module.exports = class CheckDevoirs extends Job {
+    constructor(bot) {
+        super(bot, {
+            time: "0 0 */2 * * *"
+        });
+    }
+
+    async execute() {
+        if(!this.bot.students) return;
+        await asyncForEach(this.bot.students, async (student) => {
+            await student.initBrowser();
+            await student.login(false);
+            await student.fetchDevoirs(true, true);
+            const user = new InstaUser(this.bot, student.instaUsername, this.bot.ig);
+            await user.fetchID();
+            if(student.devoirs.cache){
+                const added = student.devoirs.getDevoirsAdded();
+                if(added.length > 0){
+                    user.send(`
+                    Nouveau(x) devoir(s):
+    
+${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace(":", "")}`).join("\n\n")}
+                    `);
+                };
+            }
+            await student.devoirs.saveCache();
+            await delay(3000);
+        });
+    }
+};

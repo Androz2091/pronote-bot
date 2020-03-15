@@ -1,7 +1,8 @@
 const { get } = require("request-promise");
 
 module.exports = class InstaUser {
-    constructor(userID, ig) {
+    constructor(bot, userID, ig) {
+        this.bot = bot;
         this.id = userID;
         this.ig = ig;
         this.thread = this.ig.entity.directThread([this.id]);
@@ -10,6 +11,12 @@ module.exports = class InstaUser {
     async send(content) {
         await this.thread.broadcastText(content);
         return true;
+    }
+
+    async fetchID() {
+        this.id = await this.ig.user.getIdByUsername(this.id);
+        this.thread = this.ig.entity.directThread([this.id]);
+        return;
     }
 
     async fetchInfo() {
@@ -31,15 +38,11 @@ module.exports = class InstaUser {
 
     // Whether the user is logged
     get logged() {
-        return Boolean(
-            require("../credentials.json").find(i => i.insta === this.username)
-        );
+        return this.bot.students.some((student) => student.instaUsername === this.username);
     }
 
     // The user credentials
-    get credentials() {
-        return require("../credentials.json").find(
-            i => i.insta === this.username
-        );
+    get student() {
+        return this.bot.students.find((student) => student.instaUsername === this.username);
     }
 };

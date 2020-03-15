@@ -4,12 +4,9 @@ const dateAndTime = require("date-and-time");
 require("date-and-time/locale/fr");
 dateAndTime.locale("fr");
 
-/**
- * Représente une journée
- */
-class Journee {
+module.exports = class Journee {
     constructor(date, emploiDuTemps) {
-        // Cours de la journée
+        // Récupération des cours de la journée
         this.coursRaw = emploiDuTemps.donneesSec.donnees.ListeCours.filter(
             c => c.DateDuCours.V.split("/")[0] === date
         );
@@ -89,5 +86,3 @@ class Journee {
         return `Sortie possible: ${this.lastCours.formattedEndDate}`;
     }
 }
-
-module.exports = Journee;
