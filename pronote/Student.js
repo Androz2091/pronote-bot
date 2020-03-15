@@ -45,8 +45,7 @@ module.exports = class Student {
         return new Promise(async resolve => {
             this.startAt = Date.now();
             this.browser = await puppeteer.launch({
-                args: [ "--no-sandbox" ],
-                headless: false
+                args: [ "--no-sandbox" ]
             });
             this.browser.on("disconnected", () => {
                 this.logger.log(`Browser closed. (session=${this.entUsername})`, "info");
