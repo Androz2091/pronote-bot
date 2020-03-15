@@ -11,6 +11,7 @@ module.exports = class CheckDevoirs extends Job {
 
     async execute() {
         if(!this.bot.students) return;
+        const startAt = Date.now();
         await asyncForEach(this.bot.students, async (student) => {
             await student.initBrowser();
             await student.login(false);
@@ -30,5 +31,6 @@ ${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace("
             await student.devoirs.saveCache();
             await delay(3000);
         });
+        this.bot.logger.log("Check devoirs ended. (duration="(Date.now()-startAt)+"ms)", "info");
     }
 };
