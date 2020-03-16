@@ -107,7 +107,7 @@ module.exports = class Student {
             // Login
             let navPromise = this.page.waitForNavigation({
                 waitUntil: "networkidle0",
-                timeout: 0
+                timeout: 120000
             });
             await this.page.goto(this.config.entLoginURL);
             await navPromise;
@@ -116,7 +116,7 @@ module.exports = class Student {
             this.logger.log(`Credentials typed. (session=${this.entUsername})`, "debug");
             navPromise = this.page.waitForNavigation({
                 waitUntil: "networkidle0",
-                timeout: 0
+                timeout: 120000
             });
             await this.page.$eval("#button-submit", form => form.click());
             await navPromise;
@@ -128,7 +128,7 @@ module.exports = class Student {
         return new Promise(async resolve => {
             const navPromise = this.page.waitForNavigation({
                 waitUntil: "networkidle0",
-                timeout: 0
+                timeout: 120000
             });
             this.page.goto("https://adrienne-bolland.ecollege.haute-garonne.fr/sg.do?PROC=TRAVAIL_A_FAIRE&ACTION=AFFICHER_ELEVES_TAF&filtreAVenir=true");
             await navPromise;
@@ -155,7 +155,7 @@ module.exports = class Student {
             this.logger.log(`Going to pronote. (session=${this.entUsername})`, "debug");
             const navPromise = this.page.waitForNavigation({
                 waitUntil: "networkidle0",
-                timeout: 0
+                timeout: 120000
             });
             await this.page.goto(this.config.pronoteURL);
             await navPromise;
