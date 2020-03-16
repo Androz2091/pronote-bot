@@ -105,11 +105,13 @@ module.exports = class Student {
     async login(){
         return new Promise(async resolve => {
             // Login
+            let navPromise = this.page.waitForNavigation({ waitUntil: "networkidle0" });
             await this.page.goto(this.config.entLoginURL);
+            await navPromise;
             await this.page.type("#username", this.entUsername);
             await this.page.type("#password", this.entPassword);
             this.logger.log(`Credentials typed. (session=${this.entUsername})`, "debug");
-            const navPromise = this.page.waitForNavigation({ waitUntil: "networkidle0" });
+            navPromise = this.page.waitForNavigation({ waitUntil: "networkidle0" });
             await this.page.$eval("#button-submit", form => form.click());
             await navPromise;
             resolve(this.page);
