@@ -6,7 +6,7 @@ const InstaMessage = require("./instagram/InstaMessage");
 
 // Utils
 const logger = require("./helpers/logger");
-const { readFileAsync } = require("fs");
+const { readFile } = require("fs").promises;
 
 // Pronote bot class
 const PronoteBot = require("./structures/PronoteBot");
@@ -142,7 +142,7 @@ const PronoteBot = require("./structures/PronoteBot");
          */
         else if (message.content === "!picture") {
             await message.reply("Veuillez patienter...");
-            const img = await readFileAsync(`./images/${message.author.student.entUsername}.png`);
+            const img = await readFile(`./images/${message.author.student.entUsername}.png`);
             await message.replyImage(Buffer.from(img, "binary"));
             setTimeout(() => message.reply("Voilà votre photo de profil Pronote!"), 500);
         }
