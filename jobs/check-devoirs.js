@@ -13,9 +13,14 @@ module.exports = class CheckDevoirs extends Job {
         if(!this.bot.students) return;
         const startAt = Date.now();
         await asyncForEach(this.bot.students, async (student) => {
-            await student.initBrowser();
-            await student.login(false);
-            await student.fetchDevoirs(true, true);
+            try {
+                await student.initBrowser();
+                await student.login(false);
+                await student.fetchDevoirs(true, true);
+            } catch(err) {
+                return this.bot.logger.log("ENT unreachable. Skipping...");
+            }
+            
             const user = new InstaUser(this.bot, student.instaUsername, this.bot.ig);
             await user.fetchID();
             if(!user.id) return this.bot.logger.log("Cannot send dm to "+student.instaUsername+"...", "error");

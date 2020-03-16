@@ -9,6 +9,8 @@ const dateAndTime = require("date-and-time");
 require("date-and-time/locale/fr");
 dateAndTime.locale("fr");
 
+const timeout = 35000;
+
 module.exports = class Student {
 
     constructor(handler, data){
@@ -107,23 +109,29 @@ module.exports = class Student {
     }
 
     async login(){
-        return new Promise(async resolve => {
+        return new Promise(async (resolve, reject) => {
             // Login
             let navPromise = this.page.waitForSelector("#username", {
-                timeout: 120000
+                timeout
             });
             await this.page.goto(this.config.entLoginURL);
-            await navPromise;
-            await this.page.type("#username", this.entUsername);
-            await this.page.type("#password", this.entPassword);
-            this.logger.log(`Credentials typed. (session=${this.entUsername})`, "debug");
-            navPromise = this.page.waitForNavigation({
-                waitUntil: "networkidle0",
-                timeout: 120000
+            navPromise.then(async () => {
+                await this.page.type("#username", this.entUsername);
+                await this.page.type("#password", this.entPassword);
+                this.logger.log(`Credentials typed. (session=${this.entUsername})`, "debug");
+                navPromise = this.page.waitForNavigation({
+                    waitUntil: "networkidle0",
+                    timeout
+                });
+                await this.page.$eval("#button-submit", form => form.click());
+                navPromise.then(() => {
+                    resolve(this.page);
+                }).catch(() => {
+                    reject("unreachable (step=form-submit)");
+                });
+            }).catch(() => {
+                reject("unreachable (step=login-page)");
             });
-            await this.page.$eval("#button-submit", form => form.click());
-            await navPromise;
-            resolve(this.page);
         });
     }
 
@@ -131,7 +139,7 @@ module.exports = class Student {
         return new Promise(async resolve => {
             const navPromise = this.page.waitForNavigation({
                 waitUntil: "networkidle0",
-                timeout: 120000
+                timeout
             });
             this.page.goto("https://adrienne-bolland.ecollege.haute-garonne.fr/sg.do?PROC=TRAVAIL_A_FAIRE&ACTION=AFFICHER_ELEVES_TAF&filtreAVenir=true");
             await navPromise;
@@ -161,7 +169,7 @@ module.exports = class Student {
             this.logger.log(`Going to pronote. (session=${this.entUsername})`, "debug");
             const navPromise = this.page.waitForNavigation({
                 waitUntil: "networkidle0",
-                timeout: 120000
+                timeout
             });
             await this.page.goto(this.config.pronoteURL);
             await navPromise;

@@ -122,17 +122,21 @@ const PronoteBot = require("./structures/PronoteBot");
             message.reply("Veuillez patienter...");
 
             const student = await bot.database.fetchStudent(message.author.username);
-            await student.initBrowser();
-            await student.login(false);
-            await student.pronote(false);
-            await student.fetchNotes(false, true);
 
-            message.reply(
-                "Moyennes:\n\nNormale: " +
-                    (student.notes.moyenne || "Aucune note") +
-                    "\nPluriannuelle: " +
-                    (student.notes.moyennePluri || "Aucune note")
-            );
+            try {
+                await student.initBrowser();
+                await student.login(false);
+                await student.pronote(false);
+                await student.fetchNotes(false, true);
+                message.reply(
+                    "Moyennes:\n\nNormale: " +
+                        (student.notes.moyenne || "Aucune note") +
+                        "\nPluriannuelle: " +
+                        (student.notes.moyennePluri || "Aucune note")
+                );
+            } catch(err) {
+                message.reply("L'ENT est actuellement inaccessible. Veuillez réessayez plus tard.");
+            }
 
             bot.deleteCooldown(message.author.username);
         }
