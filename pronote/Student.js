@@ -105,8 +105,7 @@ module.exports = class Student {
     async login(){
         return new Promise(async resolve => {
             // Login
-            let navPromise = this.page.waitForNavigation({
-                waitUntil: "networkidle0",
+            let navPromise = this.page.waitForSelector("#username", {
                 timeout: 120000
             });
             await this.page.goto(this.config.entLoginURL);
