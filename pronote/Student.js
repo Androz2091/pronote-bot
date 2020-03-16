@@ -126,11 +126,11 @@ module.exports = class Student {
                 await this.page.$eval("#button-submit", form => form.click());
                 navPromise.then(() => {
                     resolve(this.page);
-                }).catch(() => {
+                }).catch(async () => {
                     await this.browser.close();
                     reject("unreachable (step=form-submit)");
                 });
-            }).catch(() => {
+            }).catch(async () => {
                 await this.browser.close();
                 reject("unreachable (step=login-page)");
             });
