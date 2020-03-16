@@ -5,6 +5,10 @@ const { formatMatiere } = require("../helpers/functions");
 const Notes = require("./Notes");
 const Devoirs = require("./Devoirs");
 
+const dateAndTime = require("date-and-time");
+require("date-and-time/locale/fr");
+dateAndTime.locale("fr");
+
 module.exports = class Student {
 
     constructor(handler, data){
@@ -135,9 +139,12 @@ module.exports = class Student {
             const devoirsLength = $(".js-taf__content").length;
             const devoirs = [];
             for(let i = 0; i < devoirsLength; i++){
+                const rawDate = $(".js-taf__content").get(i).children[3].children[1].children[0].data.trim().split(" ").splice(1, 3).join(" ");
+                const date = new Date(dateAndTime.parse(rawDate, "D MMMM YYYY"));
                 devoirs.push({
                     matiere: formatMatiere($(".js-taf__content").get(i).children[1].children[1].children[1].children[0].data.trim()),
-                    content: $(".js-taf__content").get(i).children[1].children[1].children[3].children[0].data.trim()
+                    content: $(".js-taf__content").get(i).children[1].children[1].children[3].children[0].data.trim(),
+                    date: date.getDate()+"/"+doubleDigits(date.getMonth()+1)
                 });
             }
             this.devoirs = new Devoirs(this, devoirs);

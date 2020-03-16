@@ -26,7 +26,7 @@ module.exports = class CheckDevoirs extends Job {
                             user.send(`
 Nouveau(x) devoir(s):
         
-${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace(":", "")}`).join("\n\n")}
+${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace(":", "")}\n📅 ${d.date}`).join("\n\n")}
                             `);
                             await student.devoirs.saveCache();
                     } else {
