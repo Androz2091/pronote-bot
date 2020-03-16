@@ -6,6 +6,7 @@ const InstaMessage = require("./instagram/InstaMessage");
 
 // Utils
 const logger = require("./helpers/logger");
+const { readFileAsync } = require("fs");
 
 // Pronote bot class
 const PronoteBot = require("./structures/PronoteBot");
