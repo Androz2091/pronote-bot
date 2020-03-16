@@ -127,9 +127,11 @@ module.exports = class Student {
                 navPromise.then(() => {
                     resolve(this.page);
                 }).catch(() => {
+                    await this.browser.close();
                     reject("unreachable (step=form-submit)");
                 });
             }).catch(() => {
+                await this.browser.close();
                 reject("unreachable (step=login-page)");
             });
         });
