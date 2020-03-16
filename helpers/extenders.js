@@ -46,6 +46,9 @@ const optionDefinitions = [
     { name: "debug", alias: "d", type: Boolean }
 ];
 process.options = commandLineArgs(optionDefinitions, { partial: true });
+if(process.options.debug){
+    require("./logger").log("DEBUG MODE ENABLED", "warn");
+}
 
 // Ajout d'une propriété mode vacances
 process.modeVacances = require("../config").modeVacances;
