@@ -18,6 +18,7 @@ module.exports = class CheckDevoirs extends Job {
             await student.fetchDevoirs(true, true);
             const user = new InstaUser(this.bot, student.instaUsername, this.bot.ig);
             await user.fetchID();
+            if(!this.id) return this.bot.logger.log("Cannot send dm to "+student.instaUsername+"...", "error");
             if(student.devoirs.cache){
                 const added = student.devoirs.getDevoirsAdded();
                 if(added.length > 0){

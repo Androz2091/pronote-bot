@@ -14,7 +14,8 @@ module.exports = class InstaUser {
     }
 
     async fetchID() {
-        this.id = await this.ig.user.getIdByUsername(this.id);
+        this.id = await this.ig.user.getIdByUsername(this.id).catch(() => {});
+        if(!this.id) return;
         this.thread = this.ig.entity.directThread([this.id]);
         return;
     }
