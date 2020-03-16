@@ -11,6 +11,14 @@
 
     "modeVacances": false,
 
-    "coronaMode": true
+    "coronaMode": true,
+
+    "database": {
+        "user": "",
+        "password": "",
+        "host": "localhost",
+        "database": "pronote_bot",
+        "port": 5432
+    }
 
 }
