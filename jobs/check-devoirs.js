@@ -22,7 +22,7 @@ module.exports = class CheckDevoirs extends Job {
             if(student.devoirs.cache){
                 const added = student.devoirs.getDevoirsAdded();
                 if(added.length > 0){
-                    if(process.options.debug){
+                    if(!process.options.debug){
                             user.send(`
                         Nouveau(x) devoir(s):
         
