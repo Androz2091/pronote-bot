@@ -22,11 +22,15 @@ module.exports = class CheckDevoirs extends Job {
             if(student.devoirs.cache){
                 const added = student.devoirs.getDevoirsAdded();
                 if(added.length > 0){
-                    user.send(`
-                    Nouveau(x) devoir(s):
-    
-${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace(":", "")}`).join("\n\n")}
-                    `);
+                    if(process.options.debug){
+                            user.send(`
+                        Nouveau(x) devoir(s):
+        
+    ${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace(":", "")}`).join("\n\n")}
+                            `);
+                    } else {
+                        this.bot.logger.log(added);
+                    }
                 };
             }
             await student.devoirs.saveCache();
