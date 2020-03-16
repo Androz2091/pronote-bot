@@ -32,6 +32,6 @@ ${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace("
             await student.devoirs.saveCache();
             await delay(3000);
         });
-        this.bot.logger.log("Check devoirs ended. (duration="(Date.now()-startAt)+"ms)", "info");
+        this.bot.logger.log("Check devoirs ended. (duration="+(Date.now()-startAt)+"ms)", "info");
     }
 };
