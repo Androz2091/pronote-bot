@@ -28,12 +28,12 @@ module.exports = class CheckDevoirs extends Job {
         
     ${added.map((d) => `🔖 ${d.matiere}\n📝 ${d.content.split("\n")[0].replace(":", "")}`).join("\n\n")}
                             `);
+                            await student.devoirs.saveCache();
                     } else {
                         this.bot.logger.log(added);
                     }
                 };
             }
-            await student.devoirs.saveCache();
             await delay(3000);
         });
         this.bot.logger.log("Check devoirs ended. (duration="+(Date.now()-startAt)+"ms)", "info");

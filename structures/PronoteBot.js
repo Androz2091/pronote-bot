@@ -26,7 +26,7 @@ module.exports = class PronoteBot {
         setTimeout(() => {
             this.listening = true;
             this.logger.log("Client is listening.", "info");
-            this.jobs.get("check-devoirs").execute();
+            if(!process.options.uninit) this.jobs.get("check-devoirs").execute();
         }, 2000);
 
         // Load extenders

@@ -43,7 +43,8 @@ String.prototype.isJson = function() {
 // Ajout d'une propriété process.options
 const commandLineArgs = require("command-line-args");
 const optionDefinitions = [
-    { name: "debug", alias: "d", type: Boolean }
+    { name: "debug", alias: "d", type: Boolean },
+    { name: "uninit", alias: "i", type: Boolean }
 ];
 process.options = commandLineArgs(optionDefinitions, { partial: true });
 if(process.options.debug){
