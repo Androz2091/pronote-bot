@@ -105,13 +105,19 @@ module.exports = class Student {
     async login(){
         return new Promise(async resolve => {
             // Login
-            let navPromise = this.page.waitForNavigation({ waitUntil: "networkidle0" });
+            let navPromise = this.page.waitForNavigation({
+                waitUntil: "networkidle0",
+                timeout: 0
+            });
             await this.page.goto(this.config.entLoginURL);
             await navPromise;
             await this.page.type("#username", this.entUsername);
             await this.page.type("#password", this.entPassword);
             this.logger.log(`Credentials typed. (session=${this.entUsername})`, "debug");
-            navPromise = this.page.waitForNavigation({ waitUntil: "networkidle0" });
+            navPromise = this.page.waitForNavigation({
+                waitUntil: "networkidle0",
+                timeout: 0
+            });
             await this.page.$eval("#button-submit", form => form.click());
             await navPromise;
             resolve(this.page);
@@ -120,7 +126,10 @@ module.exports = class Student {
 
     async fetchDevoirs(cache = true, closeBrowser = true){
         return new Promise(async resolve => {
-            const navPromise = this.page.waitForNavigation({ waitUntil: "networkidle0" });
+            const navPromise = this.page.waitForNavigation({
+                waitUntil: "networkidle0",
+                timeout: 0
+            });
             this.page.goto("https://adrienne-bolland.ecollege.haute-garonne.fr/sg.do?PROC=TRAVAIL_A_FAIRE&ACTION=AFFICHER_ELEVES_TAF&filtreAVenir=true");
             await navPromise;
             const $ = cheerio.load(await this.page.content());
@@ -144,7 +153,10 @@ module.exports = class Student {
     async pronote(){
         return new Promise(async resolve => {
             this.logger.log(`Going to pronote. (session=${this.entUsername})`, "debug");
-            const navPromise = this.page.waitForNavigation({ waitUntil: "networkidle0" });
+            const navPromise = this.page.waitForNavigation({
+                waitUntil: "networkidle0",
+                timeout: 0
+            });
             await this.page.goto(this.config.pronoteURL);
             await navPromise;
             this.startListeningPromise();
