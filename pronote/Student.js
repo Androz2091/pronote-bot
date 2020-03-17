@@ -1,6 +1,7 @@
 const puppeteer = require("puppeteer");
 const cheerio = require("cheerio");
 const { formatMatiere } = require("../helpers/functions");
+const doubleDigits = require("double-digits");
 
 const Notes = require("./Notes");
 const Devoirs = require("./Devoirs");
