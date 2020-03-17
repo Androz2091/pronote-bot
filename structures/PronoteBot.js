@@ -75,10 +75,11 @@ module.exports = class PronoteBot {
 !moy (affiche vos moyennes)
 !picture (affiche votre photo)
 !recap (affiche infos sur la journée)
+!devoirs (affiche recap des devoirs)
 !notif (active les notifications)
 !dénotif (désactive les notifications)
 
-${notifEnabled ? "🔔Notification activées" : "🔕Notification désactivées"}`;
+${notifEnabled ? "🔔Notifications activées" : "🔕Notifications désactivées"}`;
         return helpPage;
     }
 
