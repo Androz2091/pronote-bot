@@ -61,7 +61,7 @@ module.exports = class LoginState {
             let navPromise = page.waitForSelector("#username", {
                 timeout
             });
-            await page.goto(this.config.entLoginURL);
+            await page.goto(this.bot.config.entLoginURL);
             navPromise.then(async () => {
                 await page.type("#username", this.username);
                 await page.type("#password", this.password);
