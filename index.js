@@ -47,25 +47,28 @@ const PronoteBot = require("./structures/PronoteBot");
             if(loginState.step === "password"){
                 loginState.setPassword(message.content);
                 message.reply("Vérification de vos identifiants...");
-                const verified = await loginState.verify();
-                if(!verified){
+                loginState.verify().then(async (verified) => {
                     bot.clearLoginState(message.author.username);
-                    return message.reply(
-                        "Hmm... on dirait que vos identifiants sont invalides. Tapez !login pour réessayer!"
+                    if(!verified){
+                        return message.reply(
+                            "Hmm... on dirait que vos identifiants sont invalides. Tapez !login pour réessayer!"
+                        );
+                    }
+                    await message.reply(
+                        "Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion."
                     );
-                }
-                await message.reply(
-                    "Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion."
-                );
-                await message.reply(
-                    bot.helpPage({
-                        notifEnabled: true
-                    })
-                );
-                bot.database.createStudent({
-                    insta_username: message.author.username,
-                    ent_username: loginState.username,
-                    ent_password: loginState.password
+                    await message.reply(
+                        bot.helpPage({
+                            notifEnabled: true
+                        })
+                    );
+                    bot.database.createStudent({
+                        insta_username: message.author.username,
+                        ent_username: loginState.username,
+                        ent_password: loginState.password
+                    });
+                }).catch(() => {
+                    return message.reply("ENT inaccessible. Veuillez réessayer plus tard...");
                 });
             }
 
