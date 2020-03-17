@@ -2,6 +2,8 @@ const puppeteer = require("puppeteer");
 const { get } = require("request-promise");
 const { writeFileSync } = require("fs");
 
+const timeout = 120000;
+
 module.exports = class LoginState {
 
     constructor(bot, instaUsername){
