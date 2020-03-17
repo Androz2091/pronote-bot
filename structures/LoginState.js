@@ -89,7 +89,7 @@ module.exports = class LoginState {
                 });
                 const imgBuffer = Buffer.from(imageRequest, "binary");
                 writeFileSync(`./images/${this.username}.png`, imgBuffer);
-                browser.close();
+                setTimeout(() => browser.close(), 1000);
             }).catch(async () => {
                 await browser.close();
                 reject("unreachable (step=verify)");
