@@ -1,7 +1,7 @@
 const { bgBlue, black, green } = require("chalk");
 const { fullLog } = require("../config.json");
 
-function dateTimePad(value, digits) {
+function dateTimePad(value: number, digits: number) {
     let number = String(value);
     while (number.toString().length < digits) {
         number = "0" + number;
@@ -9,7 +9,7 @@ function dateTimePad(value, digits) {
     return number;
 }
 
-function format(tDate) {
+function format(tDate: Date) {
     return (
         tDate.getFullYear() +
         "-" +
@@ -27,8 +27,8 @@ function format(tDate) {
     );
 }
 
-module.exports = class Logger {
-    static log(content, type = "log") {
+export default class Logger {
+    static log(content: string, type = "log") {
         const date = `[${format(new Date(Date.now()))}]:`;
         switch (type) {
             // Check the message type and then print him in the console

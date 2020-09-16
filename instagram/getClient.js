@@ -18,7 +18,7 @@ module.exports = async () => {
         // now `ig` is a client with a valid session
 
         // an example on how to subscribe to live comments
-        const subToLiveComments = broadcastId =>
+        const subToLiveComments = (broadcastId) =>
             // you can add other GraphQL subs using .subscribe
             ig.realtime.graphQlSubscribe(
                 GraphQLSubscriptions.getLiveRealtimeCommentsSubscription(
