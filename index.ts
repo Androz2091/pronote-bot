@@ -58,10 +58,10 @@ bot.instagram.on('messageCreate', async (message) => {
             const pronoteServerID = message.content.match(pronoteRegex)[1];
             loginState.setPronoteURL(`https://${pronoteServerID}.index-education.net/pronote/`);
             const waitingMessagePromise = message.reply('Vérification de vos identifiants...');
-            const verified = await loginState.verify();
+            const session = await loginState.verify();
             await waitingMessagePromise;
-            if (!verified) await message.reply('Hmm... on dirait que vos identifiants sont invalides. Tapez !login pour réessayer!');
-            bot.database.createStudent({
+            if (!session) await message.reply('Hmm... on dirait que vos identifiants sont invalides. Tapez !login pour réessayer!');
+            const student = {
                 instaID: message.author.id,
                 instaUsername: message.author.username,
                 pronoteUsername: loginState.username,
@@ -70,7 +70,9 @@ bot.instagram.on('messageCreate', async (message) => {
                 pronoteURL: loginState.pronoteURL,
                 notifEnabled: true,
                 isDeleted: false
-            });
+            };
+            bot.createSession(student, session);
+            bot.database.createStudent(student);
             await message.reply("Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion.");
             await message.reply(generateHelpPage({ notifications: true }));
         }
@@ -247,14 +249,16 @@ bot.instagram.on('messageCreate', async (message) => {
 
         message.reply('Veuillez patienter...');
 
-        const homeworks = await session.homeworks();
+        const homeworks = await session.homeworks(new Date(), new Date(new Date().getTime() + (24 * 60 * 60 * 1000)));
 
-        message.reply(
-            stripIndent`
-                📚 ${homeworks.length} devoirs
-                ${homeworks.map((d) => `- ${d.subject}`).join('\n')}
-            `
-        );
+        const devoirsContent = stripIndent`
+            📚 ${homeworks.length} devoirs pour demain
+            
+
+            ${homeworks.map((d) => `- ${d.subject}\n\n${d.description}`).join('\n\n')}
+        `;
+
+        message.reply(devoirsContent);
     }
 
     /**

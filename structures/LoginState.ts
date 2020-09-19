@@ -1,5 +1,8 @@
-import PronoteBot from "./PronoteBot";
+import type PronoteBot from './PronoteBot';
+import type { PronoteSession } from 'pronote-api';
 import { login } from 'pronote-api';
+import { writeFileSync } from 'fs';
+import fetch from 'node-fetch';
 
 export default class LoginState {
 
@@ -41,13 +44,18 @@ export default class LoginState {
         });
     }
 
-    verify (): Promise<boolean> {
+    verify (): Promise<PronoteSession> {
         return new Promise((resolve) => {
             this.resolveCas().then(() => {
-                login(this.pronoteURL, this.username, this.password, this.cas, 'student').then(() => {
-                    resolve(true);
+                login(this.pronoteURL, this.username, this.password, this.cas, 'student').then((session) => {
+                    resolve(session);
+                    fetch(session.user.avatar).then((res) => {
+                        res.buffer().then((buffer) => {
+                            writeFileSync(`./images/${this.username}.png`, buffer);
+                        });
+                    });
                 }).catch(() => {
-                    resolve(false);
+                    resolve(null);
                 });
             });
         });

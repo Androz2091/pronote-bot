@@ -39,10 +39,11 @@ export default class PronoteBot {
         });
     }
 
-    async createSession (student: StudentPayload): Promise<PronoteSession> {
+    async createSession (student: StudentPayload, activeSession?: PronoteSession): Promise<PronoteSession> {
         try {
-            const session = await login(student.pronoteURL, student.pronoteUsername, student.pronotePassword, student.pronoteCas, 'student');
+            const session = activeSession ?? await login(student.pronoteURL, student.pronoteUsername, student.pronotePassword, student.pronoteCas, 'student');
             session.setKeepAlive(true);
+            this.pronoteSessions.set(student.instaID, session);
             return session;
         } catch (e) {
             console.error(e);
@@ -51,9 +52,7 @@ export default class PronoteBot {
     }
 
     async createSessions () {
-        for (const student of this.students.array()) {
-            this.pronoteSessions.set(student.instaID, await this.createSession(student));
-        }
+        await Promise.all(this.students.map((student) => this.createSession(student)));
     }
 
 };
