@@ -49,6 +49,7 @@ export default class LoginState {
             this.resolveCas().then(() => {
                 login(this.pronoteURL, this.username, this.password, this.cas, 'student').then((session) => {
                     resolve(session);
+                    if (!session.user.avatar) return;
                     fetch(session.user.avatar).then((res) => {
                         res.buffer().then((buffer) => {
                             writeFileSync(`./images/${this.username}.png`, buffer);
