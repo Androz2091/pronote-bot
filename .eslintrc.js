@@ -7,6 +7,10 @@ module.exports = {
     extends: [
         'google'
     ],
+    parser: '@typescript-eslint/parser',
+    plugins: [
+        '@typescript-eslint'
+    ],
     parserOptions: {
         ecmaVersion: 11
     },
