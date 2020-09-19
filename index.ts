@@ -4,10 +4,9 @@ import LoginState from './structures/LoginState';
 import logger from './helpers/logger';
 import { stripIndent } from 'common-tags';
 import { promises } from 'fs';
-import { login } from 'pronote-api';
 
 const generateHelpPage = ({ notifications }: { notifications: boolean }) => {
-return stripIndent`
+    return stripIndent`
         Voici la liste des commandes disponibles :
                 
         !moy (affiche vos moyennes)
@@ -41,9 +40,9 @@ bot.instagram.on('messageCreate', async (message) => {
     const loginState = loginStates.get(message.author.id);
 
     if (
-        !loginState
-        && !bot.students.has(message.author.id)
-        && message.content !== '!login'
+        !loginState &&
+        !bot.students.has(message.author.id) &&
+        message.content !== '!login'
     ) {
         return message.reply('Tapez !login pour vous connecter à l\'ENT.');
     }
@@ -73,7 +72,7 @@ bot.instagram.on('messageCreate', async (message) => {
             };
             bot.createSession(student, session);
             bot.database.createStudent(student);
-            await message.reply("Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion.");
+            await message.reply('Vous êtes maintenant connecté! Pour des raisons évidentes de sécurité, il est conseillé de supprimer votre mot de passe de la discussion.');
             await message.reply(generateHelpPage({ notifications: true }));
         }
 
