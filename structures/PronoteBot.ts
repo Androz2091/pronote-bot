@@ -1,8 +1,9 @@
 import Collection from '@discordjs/collection';
 import { Client as InstagramClient } from '@androz2091/insta.js';
 import DatabaseService, { StudentPayload } from '../services/database';
-import { PronoteSession, login } from 'pronote-api';
+import { PronoteSession, login, Homework } from 'pronote-api';
 import { instagram } from '../config.json';
+import { getSubjectName } from '../helpers/subjects';
 
 export default class PronoteBot {
 
@@ -53,6 +54,16 @@ export default class PronoteBot {
 
     async createSessions () {
         await Promise.all(this.students.map((student) => this.createSession(student)));
+    }
+
+    async getHomeworks (session: PronoteSession, prettifySubjectName: boolean = true, ...dates: Date[]): Promise<Homework[]> {
+        const homeworks = await session.homeworks(...dates);
+        return prettifySubjectName ? homeworks.map((homework) => {
+            return {
+                ...homework,
+                subject: getSubjectName(homework.subject, false)
+            };
+        }) : homeworks;
     }
 
 };

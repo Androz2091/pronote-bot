@@ -252,7 +252,7 @@ bot.instagram.on('messageCreate', async (message) => {
         const dow = date.getDay();
         const day = (24 * 60 * 60 * 1000);
         const nextValidDay = dow === 5 ? new Date(date.getTime() + (3 * day)) : dow === 6 ? new Date(date.getTime() + (2 * day)) : new Date(date.getTime() + day);
-        const homeworks = await session.homeworks(new Date(), nextValidDay);
+        const homeworks = await bot.getHomeworks(session, true, new Date(), nextValidDay);
 
         const devoirsContent = `📚 ${homeworks.length} devoirs pour demain\n\n${homeworks.map((d) => `- ${d.subject}\n\n${d.description}`).join('\n\n')}`;
 
