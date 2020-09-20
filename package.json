@@ -37,7 +37,8 @@
     "pg": "^8.3.3",
     "pronote-api": "^2.1.3",
     "require-reload": "^0.2.2",
-    "string-similarity": "^3.0.0"
+    "string-similarity": "^3.0.0",
+    "strip-indent": "^3.0.0"
   },
   "devDependencies": {
     "@types/common-tags": "^1.8.0",

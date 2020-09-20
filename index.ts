@@ -2,11 +2,11 @@ import Collection from '@discordjs/collection';
 import PronoteBot from './structures/PronoteBot';
 import LoginState from './structures/LoginState';
 import logger from './helpers/logger';
-import { stripIndent } from 'common-tags';
+import stripIndent from 'strip-indent';
 import { promises } from 'fs';
 
 const generateHelpPage = ({ notifications }: { notifications: boolean }) => {
-    return stripIndent`
+    return stripIndent(`
         Voici la liste des commandes disponibles :
                 
         !moy (affiche vos moyennes)
@@ -17,7 +17,7 @@ const generateHelpPage = ({ notifications }: { notifications: boolean }) => {
         !dénotif (désactive les notifications)
 
         ${notifications ? '🔔Notifications activées' : '🔕Notifications désactivées'}
-    `;
+    `);
 };
 
 const processingUsers = new Set<string>();
@@ -248,14 +248,13 @@ bot.instagram.on('messageCreate', async (message) => {
 
         message.reply('Veuillez patienter...');
 
-        const homeworks = await session.homeworks(new Date(), new Date(new Date().getTime() + (24 * 60 * 60 * 1000)));
+        const date = new Date();
+        const dow = date.getDay();
+        const day = (24 * 60 * 60 * 1000);
+        const nextValidDay = dow === 5 ? new Date(date.getTime() + (3 * day)) : dow === 6 ? new Date(date.getTime() + (2 * day)) : new Date(date.getTime() + day);
+        const homeworks = await session.homeworks(new Date(), nextValidDay);
 
-        const devoirsContent = stripIndent`
-            📚 ${homeworks.length} devoirs pour demain
-            
-
-            ${homeworks.map((d) => `- ${d.subject}\n\n${d.description}`).join('\n\n')}
-        `;
+        const devoirsContent = `📚 ${homeworks.length} devoirs pour demain\n\n${homeworks.map((d) => `- ${d.subject}\n\n${d.description}`).join('\n\n')}`;
 
         message.reply(devoirsContent);
     }
