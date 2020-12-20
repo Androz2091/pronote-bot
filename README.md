@@ -4,6 +4,11 @@
 ![ftb](https://forthebadge.com/images/badges/made-with-javascript.svg)
 ![ftb](https://forthebadge.com/images/badges/built-with-love.svg)
 
+### Vous aimerez peut-être aussi 🦄
+
+Le pronote-bot n'est plus maintenu, il aura été un projet très intéressant, mais il demandait malheureusement trop de travail (Instagram luttant en permanence contre les bots, il fallait régulièrement faire des mises à jour pour le maintenir en ligne). Je suis heureux de vous annoncer que Pronote Notifications, une application qui vous permet de recevoir des notifications pour chaque nouvelle note et devoir vient de sortir et fais le job de pronote-bot en mieux (et en un peu plus sérieux aussi 🙃).  
+[Télécharger sur Google Play](https://play.google.com/store/apps/details?id=com.androz2091.pronote_notifications&gl=FR) (*et merci à tous ceux qui nous donneront quelques étoiles! ⭐* ^^)
+
 Chatbot Pronote disponible sur Instagram!
 
 ## Connectez-vous, affichez vos moyennes et recevez des notifs!
